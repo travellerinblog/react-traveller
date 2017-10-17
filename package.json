@@ -1,0 +1,38 @@
+{
+  "name": "react-scaffording",
+  "version": "1.0.0",
+  "description": "1. react\r   - dependencies: react, react-dom\r 2. redux \r   - dependencies: redux, react-redux\r   - dev-dependencies: redux-devtools\r 3. react-router\r   - dependencies: react-router\r 4. webpack\r   - dev-dependencies: webpack, webpack-dev-server\r 5. babel\r   - dev-dependencies: babel-core, babel-loader, babel-preset-es2015, babel-preset-react\r 6. jquery 2.2.1^\r   - dependencies: jquery@2.2.1\r 7. loader \r   - css-loader, sass-loader, style-loader",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack && npm run uglify",
+    "uglify": "uglifyjs ./public/bundle.js -o ./public/bundle.min.js -c -m",
+    "node-sass": "node-sass ./src/scss/ -o ./public/css/ --output-style compressed --source-map true"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^2.2.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "redux-devtools": "^3.4.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "uglify-js": "^3.1.4",
+    "webpack": "^3.7.1",
+    "webpack-dev-server": "^2.9.2"
+  }
+}
