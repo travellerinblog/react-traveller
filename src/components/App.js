@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import List from './List/List';
 
 
 export default class App extends Component {
@@ -11,6 +12,7 @@ export default class App extends Component {
 		return (
 			<div>
 				hello dd
+				<List/>
 			</div>
 		);
 	}
