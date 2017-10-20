@@ -10,16 +10,8 @@ class ListSearch extends Component {
     constructor(props) {
         super(props);
     }
-    // componentWillMount () {
-    //     const script = document.createElement('script');
-    
-    //     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAg6gMFuAeH6n3fc19dIJNJDaJ53eqMeWY&libraries=places';
-    //     script.type = 'text/javascript';
-    //     script.async = true;
-    
-    //     document.head.appendChild(script);
-    // }
     componentDidMount () {
+        // 자동 완성을 연결할 input창
         const input = document.getElementsByClassName('list-search-input')[0];
         let autocomplete;
         const options = {
