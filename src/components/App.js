@@ -6,7 +6,7 @@ import * as firebase from "firebase";
 import {connect} from 'react-redux';
 
 
-// DB 관련 설정
+// firebase 관련 설정
 const config = {
 	apiKey: "AIzaSyBZeqdOpwcLz0WlvJPLzu0L6qGrzl0UhHY",
 	authDomain: "traveler-in-blog.firebaseapp.com",
@@ -16,6 +16,8 @@ const config = {
 	messagingSenderId: "448524690938"
 };
 firebase.initializeApp(config);
+
+//firebase DB 
 const DB = firebase.database().ref();
 
 class App extends Component {
@@ -24,8 +26,8 @@ class App extends Component {
   }
 	componentWillMount() {
 		// state에 DB값 넣기.
-		const data = DB.on('value', snapshot => {
-				this.props.fetchDB(snapshot.val());
+		DB.on('value', snapshot => {
+			this.props.fetchDB(snapshot.val());
 		})
 }
 	render() {
@@ -40,10 +42,8 @@ class App extends Component {
 
 
 App.propTypes = {
-
 }
 App.defaultProps = {
-
 }
 
 export default connect(null, actions)(App);
