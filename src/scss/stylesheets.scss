@@ -1,9 +1,9 @@
-@import 'partials/normalize';
-@import 'partials/reset';
-@import 'partials/fonts';
-@import 'partials/mixin';
-@import 'partials/base';
-@import 'partials/color';
+@import './partials/normalize';
+@import './partials/reset';
+@import './partials/fonts';
+@import './partials/mixin';
+@import './partials/base';
+@import './partials/color';
 
 #App {
   font-family: 'Nanum Square', 'Avenir', Helvetica, Arial, sans-serif;

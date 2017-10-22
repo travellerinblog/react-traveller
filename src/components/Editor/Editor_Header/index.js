@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import HeaderTitle from './Editor_Header_Title';
 
-import '../../../scss/modules/Editor/Editor_header/_Editor_Header.scss';
+// import '../../../scss/modules/Editor/Editor_header/_Editor_Header.scss';
 
 export default class EditorHeader extends Component {
   constructor(props) {
