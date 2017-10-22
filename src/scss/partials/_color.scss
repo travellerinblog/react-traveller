@@ -1,0 +1,16 @@
+// 메인 색상
+$color-m: #f37878;
+$color-m-light: lighten($color-m,15%);
+$color-m-dark: darken($color-m,15%);
+$color-m-lighter: lighten($color-m,30%);
+$color-m-darker: darken($color-m,30%);
+
+// 검정색
+$color-b: #181818;
+$color-b-light: lighten($color-b,15%);
+$color-b-dark: darken($color-b,15%);
+$color-b-lighter: lighten($color-b,30%);
+$color-b-darker: darken($color-b,30%);
+
+// 흰색
+$color-w: #fff;
