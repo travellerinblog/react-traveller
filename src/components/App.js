@@ -5,6 +5,7 @@ import * as actions from '../actions';
 import * as firebase from "firebase";
 import {connect} from 'react-redux';
 
+import Editor from './Editor';
 
 // firebase 관련 설정
 const config = {
@@ -33,8 +34,8 @@ class App extends Component {
 	render() {
 		return (
 			<div>
-				hello dd
 				<List/>
+				<Editor />
 			</div>
 		);
 	}

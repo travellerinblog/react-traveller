@@ -8,7 +8,7 @@ module.exports = {
   },
   devServer: {
     inline: true,
-    port: 8080,
+    port: 7777,
     contentBase: __dirname + '/public/',
     historyApiFallback: true
   },
