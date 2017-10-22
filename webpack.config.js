@@ -26,11 +26,7 @@ module.exports = {
               loader: "css-loader"
             },
             {
-              loader: "sass-loader",
-              options: {
-                includePaths: [__dirname + "/src/scss/stylesheets.scss", __dirname + "/public/css/stylesheets.css"],
-                sourceMap: true
-              }
+              loader: "sass-loader"
             }
           ],
           fallback: "style-loader"
