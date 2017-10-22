@@ -32,9 +32,9 @@ class List extends Component {
         }
       }
 
-    componentWillMount() {
+    componentDidMount() {
         // DB를 가져오고나서 실행시키기 위한 임시방편, 수정필요.
-        setTimeout(this.listCheckSortType, 2000);
+        this.listCheckSortType();
     }
 
 
@@ -65,6 +65,7 @@ class List extends Component {
      */
     listCompSortLastest() {
         const lists = this.props.app_lists;
+        console.log(lists)
         // lists가 있다면(DB를 불러왔다면) Object를 Array로 만들고 작성일을 기준으로 정렬한다.
         let list_item_sorted_array = lists && Object.keys(lists)
             .map(key => Object.assign({}, {'key': key}, lists[key]))
