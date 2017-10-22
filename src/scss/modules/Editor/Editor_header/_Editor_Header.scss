@@ -1,0 +1,48 @@
+.editor-header-mainTitle,
+.editor-header-subTitle {
+  position: relative;
+  .main-title,
+  .sub-title {
+    &:empty::before {
+      color: #ccc;
+      display: block;
+    }
+    &::before {
+      content: '';
+      display: none;
+      left: 0;
+      top: 0;
+      // font-family 적용해줘야함.
+      cursor: text;
+      color: rgb(255, 255, 255);
+      opacity: 0.6;
+    }
+  }
+}
+.editor-header-mainTitle {
+  .main-title {
+    &::before {
+      content: '제목을 입력하세요.';
+      font-size: 38px;
+    }
+  }
+}
+.editor-header-subTitle {
+  .sub-title {
+    &::before {
+      content: '소제목을 입력하세요.';
+      font-size: 12px;
+    }
+  }
+}
+
+
+.editor-header-coverImage {
+  label {
+    cursor: pointer;
+  }
+  #coverImage-input-file {
+    display: none;
+  }
+
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import Editor from './Editor';
 
 export default class App extends Component {
 	constructor(props) {
@@ -10,7 +11,7 @@ export default class App extends Component {
 	render() {
 		return (
 			<div>
-				hello dd
+				<Editor />
 			</div>
 		);
 	}
