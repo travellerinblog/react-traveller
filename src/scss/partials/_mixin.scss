@@ -1,0 +1,36 @@
+@mixin border-radius($value){
+  border-radius: ($value);
+}
+@mixin clearfix{
+  &::after{
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
+// 미디어쿼리 작성
+@mixin mobile{
+  @media screen and (max-width: 767px){
+    @content;
+  }
+}
+@mixin tablet{
+  @media screen and (min-width: 768px) and (max-width: 1199px){
+    @content;
+  }
+}
+@mixin desktop{
+  @media screen and (min-width: 1200px){
+    @content;
+  }
+}
+// 반응형
+@mixin breakpoint($min-viewport, $max-viewport){
+  @media screen and (min-width: $min-viewport) and (max-width: $max-viewport){
+    @content;
+  }
+}
+// 이미지 커버
+@mixin imgcover($img){
+  background: url($img) no-repeat 0 0/cover;
+}
