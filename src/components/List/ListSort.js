@@ -6,14 +6,14 @@ import { connect } from 'react-redux';
 const propTypes = {
     app_lists: PropTypes.object,
     sorted_list: PropTypes.object,
-    listSortByLastest: PropTypes.func,
-    listSortByPopular: PropTypes.func
+    onSortByLastest: PropTypes.func,
+    onSrotByPopular: PropTypes.func
 };
 const defaultProps = {
     app_lists: {},
     sorted_list: {},
-    listSortByLastest: () => console.warn('listSortByLastest is not defined'),
-    listSortByPopular: () => console.warn('listSortByPopular is not defined')
+    onSortByLastest: () => console.warn('onSortByLastest is not defined'),
+    onSrotByPopular: () => console.warn('onSrotByPopular is not defined')
 };
 class ListSort extends Component {
     constructor(props) {
@@ -22,8 +22,8 @@ class ListSort extends Component {
     render() {
         return(
           <ul className="list-sort">
-            <li><button type="button" onClick={this.props.listLastest}>최신순</button></li>
-            <li><button type="button" onClick={this.props.listPopular}>인기순</button></li>
+            <li><button type="button" onClick={this.props.onSortByLastest}>최신순</button></li>
+            <li><button type="button" onClick={this.props.onSrotByPopular}>인기순</button></li>
           </ul>
         );
     }

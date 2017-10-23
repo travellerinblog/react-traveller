@@ -27,10 +27,6 @@ class ListFooter extends Component {
 }
 
 
-// .goto-write
-// h2.write-title 
-// button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
-// router-link.write-link(:to="{name: 'Write', query: {id: userUid}}" v-if="userStatus === 'in'") 여행 일지 쓰기
 ListFooter.propTypes = propTypes;
 ListFooter.defaultProps = defaultProps;
 export default ListFooter;

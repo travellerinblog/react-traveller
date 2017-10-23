@@ -34,7 +34,7 @@ class ListItems extends Component {
         <figure>
           <figcaption className='list-item-contents'>
             <h2 className="list-item-title">{item.title}</h2>
-            <p className="list-item-content">작성자 {item.author} | 조회수 {item.view} | 나라 {item.country} | 작성일 {item.write_date}</p>
+            <p className="list-item-content">작성자 {item.author} | 조회수 {item.view} | 나라 {item.location.country} | 작성일 {item.write_date}</p>
           </figcaption>
         </figure>
       </li>

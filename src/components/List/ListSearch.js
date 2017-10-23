@@ -11,23 +11,17 @@ class ListSearch extends Component {
         super(props);
     }
     componentDidMount () {
+        const google = window.google;
         // 자동 완성을 연결할 input창
         const input = document.getElementsByClassName('list-search-input')[0];
-        let autocomplete;
-        const options = {
-            types: ['(cities)']
-        };
-        // geocode
-        function initialize() {
-          autocomplete = new google.maps.places.Autocomplete(input, { types: ['(cities)'] });
-          autocomplete.addListener('place_changed', fillInAddress);
-        }
-        initialize()
+        let autocomplete = new google.maps.places.Autocomplete(input, { types: ['(regions)'] });
+        autocomplete.addListener('place_changed', fillInAddress);
         function fillInAddress() {
-            // Get the place details from the autocomplete object.
-            var place = autocomplete.getPlace();
+            // autocomplete 객체로 부터 장소에 대한 정보를 받는다. 
+            const place = autocomplete.getPlace()
             console.log(place);
           }
+          
     }
     render() {
         return(

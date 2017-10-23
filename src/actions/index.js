@@ -1,6 +1,5 @@
 import * as types from './ActionTypes';
 
-
 export function fetchDB (data){
   return {
     type: types.FETCH_DB,
