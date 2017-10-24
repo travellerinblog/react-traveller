@@ -18,6 +18,11 @@ export default function(state = initial_state, action) {
         'type': {$set: action.type},
         'list': {$set: action.lists}
       });
+    case actions.LIST_LOCATION_SEARCH:
+      return update(state, {
+        'type': {$set: action.type},
+        'list': {$set: action.lists}
+      })
     default:
       return state;
   }

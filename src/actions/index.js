@@ -20,3 +20,10 @@ export function listSortByPopular (lists) {
     lists
   }
 }
+
+export function listLocationSearch (lists) {
+  return {
+    type: types.LIST_LOCATION_SEARCH,
+    lists
+  }
+}
