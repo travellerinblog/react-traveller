@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import List from './List/List';
 import * as actions from '../actions';
 import * as firebase from "firebase";
 import {connect} from 'react-redux';
 
-import Editor from './Editor';
+// import { BrowserRouter as Router, Link, Match, Miss } from 'react-router-dom';
+
+import Main from './Main/';
+import List from './List/List';
 
 // firebase 관련 설정
 const config = {
@@ -24,18 +26,19 @@ const DB = firebase.database().ref();
 class App extends Component {
 	constructor(props) {
  	 super(props);
-  }
+	}
+	
 	componentWillMount() {
 		// state에 DB값 넣기.
 		DB.on('value', snapshot => {
 			this.props.fetchDB(snapshot.val());
 		})
-}
+	}
+
 	render() {
 		return (
 			<div>
-				<List/>
-				<Editor />
+				<Main />
 			</div>
 		);
 	}
