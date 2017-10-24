@@ -27,3 +27,11 @@ export function listLocationSearch (lists) {
     lists
   }
 }
+
+export function throwSearchErrorMessage (error_type, message) {
+  return {
+    type: types.THROW_SEARCH_ERROR_MESSAGE,
+    error_type,
+    message
+  }
+}

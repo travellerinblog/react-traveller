@@ -78,13 +78,13 @@ class List extends Component {
      * @property {array} compare_address_type - google에서 제공하는 주소 유형, country, administrative_area_level_1~5, colloquial_area, locality
      * @property {object} get_place - 사용자가 입력한 지역에 대한 정보를 가지고 있는 객체
      * @property {number} place_type - 사용자가 입력한 값이 compare_address_type에 포함되어 있는지 확인
+     * @property {string} search_place - list와 비교할 값
      * @property {array} sorted_list_item_array - 검색한 결과가 담겨진 배열
      * @param {object} autocomplete - getPlace() 메소드를 사용하기 위해 초기화 하면서 전달 받음
      * @memberof List
      */
     handleListLocationSearch(autocomplete) {
         const lists = this.props.app_lists;
-        
         const compare_address_type = ["country", 
                                       "administrative_area_level_1",
                                       "administrative_area_level_2",
@@ -94,10 +94,16 @@ class List extends Component {
                                       "colloquial_area",
                                       "locality"];
 
-        const get_place = autocomplete.getPlace()
+        const get_place = autocomplete.getPlace();
        
+        if(!get_place.address_components) {
+            console.log('check');
+            this.props.throwSearchErrorMessage('search','지역을 선택해 주세요.');
+            return;
+        }
+        this.props.throwSearchErrorMessage('','');
         const place_type = compare_address_type.indexOf(get_place.types[0]);
-        // list와 비교할 값
+
         let search_place = "" ;
         // 만약에 검색한 값이 나라/도/시 단위라면 그 값으로 검색을 하고, 아니라면(동/면/읍 등) 도시 이름으로 검색을 한다. 
         if (place_type > -1) {
