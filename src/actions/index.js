@@ -28,6 +28,20 @@ export function listLocationSearch (lists) {
   }
 }
 
+export function listPageCount (page_amount) {
+  return {
+    type: types.LIST_PAGE_COUNT,
+    page_amount
+  }
+}
+
+export function listPageIndexing (page_index) {
+  return {
+    type: types.LIST_PAGE_INDEXING,
+    page_index
+  }
+}
+
 export function throwSearchErrorMessage (error_type, message) {
   return {
     type: types.THROW_SEARCH_ERROR_MESSAGE,
@@ -35,3 +49,5 @@ export function throwSearchErrorMessage (error_type, message) {
     message
   }
 }
+
+

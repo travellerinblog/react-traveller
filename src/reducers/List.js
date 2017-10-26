@@ -3,10 +3,12 @@ import update from 'react-addons-update';
 
 const initial_state = {
   'type': "",
-  'list': []
+  'list': [],
+  'page_amount': 1,
+  'page_index': 0
 }
 
-export default function(state = initial_state, action) {
+export default function (state = initial_state, action) {
   switch (action.type) {
     case actions.LIST_SORT_BY_LATEST:
       return update(state, {
@@ -23,7 +25,17 @@ export default function(state = initial_state, action) {
         'type': {$set: action.type},
         'list': {$set: action.lists}
       })
+    case actions.LIST_PAGE_COUNT:
+    return update(state, {
+      'page_amount': {$set: action.page_amount}
+    })
+    case actions.LIST_PAGE_INDEXING: 
+      console.log('check index', action.page_index);
+      return update(state, {
+        'page_index': {$set: action.page_index}
+      })
     default:
       return state;
   }
 }
+

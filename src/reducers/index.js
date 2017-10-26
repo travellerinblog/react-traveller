@@ -6,8 +6,8 @@ import Errors from './Errors';
 
 const reducers = combineReducers({
   getDB: DB,
-  list: list,
-  Errors: Errors
+  list,
+  Errors
 });
 
 export default reducers;

@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import update from 'react-addons-update';
 
 // 컴포넌트
-import List from './List/List';
+import ListContainer from '../containers/ListContainer';
 import Editor from './Editor';
 
 // firebase 관련 설정
@@ -49,8 +49,8 @@ class App extends Component {
 	render() {
 		return (
 			<div>
-				<List/>
-				<Editor />
+				<ListContainer/>
+				{/* <Editor /> */}
 			</div>
 		);
 	}

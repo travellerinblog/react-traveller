@@ -1,67 +1,64 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 
-const propTypes = {
-  lists: PropTypes.object
-};
-const defaultProps = {
-  lists: {}
-};
 
-class ListItems extends Component {
-  constructor(props) {
-    super(props);
-    this.listItemsSetting = this.listItemsSetting.bind(this);
-  }
-  /**
-   * DB에서 가져온 값을 가지고 render할 HTML 태그를 정의
-   * 
-   * @memberof ListItems
-  * */
-  listItemsSetting() {
-    // DB에서 받아온 lists Object
-    const list_items = this.props.sorted_list;
-    // Array의 값을 가지고 Render할 요소를 만든다.
-    const list_items_template = list_items.list && list_items.list.map((item, index) => {
-      // render에서 출력 해줄 태그
-      return (
-        <li className='list-item' key={index}>
+/**
+ * List Items 컴포넌트 : 화면에 보여줄 글을 정한다. 
+ * @param {object} list_state - 상위 List 컴포넌트로부터 받은 값. list,type,page_index,page_amount 값을 가지고 있다.
+ * @property {number} page_index - 현재 보여주고 있는 페이지의 idnex
+ * @property {number} page_start - 글 목록의 몇 번째 아이템부터 보여줄지 정해주는 값.
+ * @property {number} page_end - 글 목록의 몇 번쨰 아이템까지 보여줄지 정해주는 값.
+ * @property {array} list_items_render - 페이지에 표시할 아이템
+ */
+const ListItems = ({list_state}) => {
+  const page_index = list_state.page_index;
+  const page_start = page_index * 12;
+  const page_end = ((page_index + 1) * 12) - 1;
+  let list_items_render = [];
+  // 아직 데이터를 가지고 오고 있는 중 
+  if(list_state.type==="") {
+    list_items_render.push(
+      <li className="list-item-loading" key="loading data">
+      잠시만 기다려주세요.
+    </li>
+    )
+  } else if (list_state.list.length === 0 ) {
+    // 데이터를 가져왔는데 list가 비어있는 경우.
+    list_items_render.push(
+      <li className="list-item-nothing" key="no data">
+        찾으시는 지역에 대한 정보가 없습니다.
+    </li>
+    )
+  } else {
+    // 화면에 보여줄 <li> 요소를 만든다.
+    for(let i = page_start; i <= page_end; i++ ){
+      // 만약에 i의 값이 list의 총 길이보다 크다면 loop 종료.
+      if (i > list_state.list.length - 1) break;
+      list_items_render.push(
+        <li className='list-item' key={list_state.list[i].key}>
         <figure>
           <figcaption className='list-item-contents'>
-            <h2 className="list-item-title">{item.title}</h2>
-            <p className="list-item-content">작성자 {item.name} | 조회수 {item.view} | 나라 {item.location.country} | 작성일 {item.write_date}</p>
+            <h2 className="list-item-title">{list_state.list[i].title}</h2>
+            <p className="list-item-content">작성자 {list_state.list[i].name} | 조회수 {list_state.list[i].view} | 나라 {list_state.list[i].location.country} | 작성일 {list_state.list[i].write_date}</p>
           </figcaption>
         </figure>
       </li>
-      );
-    });
-    // 그냥 데이터가 없는 경우와 데이터를 불러오는 중인 경우를 나누어야 함.
-    if (list_items.type==="") {
-      return (
-       <li className="list-item-loading" key="loading data">
-        잠시만 기다려주세요.
-       </li>
-      );
-    } else {
-      return list_items.list.length ? list_items_template : '찾으시는 지역에 대한 정보가 없습니다.';
+      )
     }
   }
-  render() {
-    const list_items_render = this.listItemsSetting();
-      return(
-          <ul className="list-items">
-            {list_items_render}
-          </ul>
-      );
-  }
-}
-ListItems.propTypes = propTypes;
-ListItems.defaultProps = defaultProps;
 
-const mapStateToProps = (state) => {
-  return {
-      sorted_list: state.list
-  }
+  return (
+    <ul className="list-items">
+      {list_items_render}
+    </ul>
+  );
 }
-export default connect(mapStateToProps)(ListItems);
+const propTypes = {
+  list_state: PropTypes.object
+}
+
+const defaultProps = {
+  list_state: {}
+}
+
+export default ListItems;
