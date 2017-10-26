@@ -1,0 +1,54 @@
+@include desktop {
+  section {
+    & > div:nth-child(1) {
+      height: 60px;
+      h3, a {
+        line-height: 60px;
+      }
+      h3 {
+        font-size: 28px;
+      }
+      a {
+        font-size: 16px;
+      }
+    }
+  }
+  .recommend {
+    @include clearfix;
+    
+    & > div {
+      float: left;
+    }
+    .recommend-img {
+      width: 50%;
+      position: relative;
+      overflow: hidden;
+      height: 400px;
+      img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 150%;
+        height: auto;
+      }
+    }
+    & > div:not([class="recommend-img"]) {
+      width: 50%;
+      height: 400px;
+      padding: 48px 56px;
+      h4 {
+        font-size: 40px;
+      }
+      p {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+    }
+    h3 {
+      height: 50px;
+      line-height: 50px;
+      font-size: 28px;
+    }
+  }
+}

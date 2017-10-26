@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from '../Carousel/';
 
+
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -93,7 +94,7 @@ export default class Main extends Component {
         <div className="visual-container">
           <div className="visual">
             <video id="bgvid" playsInline="playsinline" autoPlay="autoplay" muted="muted" loop="loop">
-              <source src="../src/assets/video.mp4" type="video/mp4"/>
+              <source src="/src/assets/video.mp4" type="video/mp4"/>
             </video>
           </div>
           <div className="video-content">
@@ -107,14 +108,38 @@ export default class Main extends Component {
             </p>
           </div>
         </div>
-        <div className="country-list">
-          <h1 className="country-list-title">어디로 갈래?</h1>
-          <Carousel 
-            carousel_item_info={this.state.carousel_item_info}
-          />
-          <Carousel 
-            carousel_item_info={this.state.carousel_item_info}
-          />
+        <div className="main-content">
+          <section className="country">
+            <div>
+              <h3 className="title">어디로 갈래?</h3>
+              {/* NavLink */}
+              <a href="#">더보기</a>
+            </div>
+            <Carousel carousel_item_info={this.state.carousel_item_info}/>
+          </section>
+          <section className="bloglist">
+            <div>
+              <h3 className="title">나 여기 왔다 갔다!</h3>
+              {/* NavLink */}
+              <a href="#">더보기</a>
+            </div>
+            <Carousel carousel_item_info={this.state.carousel_item_info}/>
+          </section>
+          <section className="recommend">
+            <h3>우리가 강추한다</h3>
+            <div className="recommend-img">
+              <img src={this.state.carousel_item_info[0].src} alt="test"/>
+            </div>
+            <div>
+              <h4>싱가포르 여행지 추천</h4>
+              <p className="recommend-info">
+                2017. 09. 28 | 싱가포르 | Dasom Kim
+              </p>
+              <p className="recommend-content">
+                천지는 그들을 보이는 산야에 얼음이 있음으로써 것이다. 몸이 찾아 전인 그들에게 봄바람이다. 때까지 청춘의 품었기 이성은 설산에서 봄바람이다. 뛰노는 석가는 가는 풍부하게 열매를 우리 같이, 철환하였는가? 얼마...
+              </p>
+            </div>
+          </section>
         </div>
       </main>
     )

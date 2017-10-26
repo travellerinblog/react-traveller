@@ -170,6 +170,19 @@ export default class Carousel extends Component {
     this._component_setResizeCarouselViews();
   }
 
+  /*
+    get Data Model
+    carousel_item_info: {
+      src: '',
+      title: '',
+      time: '',
+      etc: {
+        user_name: '',
+        country: '',
+        view_count: 0
+      }
+    }
+  */
   _component_getCarouselItems = () => {
     let info = this.props.carousel_item_info;
 

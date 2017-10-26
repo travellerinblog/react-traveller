@@ -1,0 +1,105 @@
+$main-content-font-color: hsla(0,0%,9%,.5);
+$main-content-bg-color: hsla(0,0%,9%,.04);
+$main-content-inner-bg-color: #fff;
+
+
+.main {
+  box-sizing: border-box;
+  background: $main-content-bg-color;
+}
+.visual-container {
+  overflow: hidden;
+  position: relative;
+  height: 720px;
+  background: #000;
+}
+.video-content {
+  p {
+    position: absolute;
+    left: 10%;
+    bottom: 16%;
+  }
+  strong {
+    display: block;
+    font-size: 48px;
+    color: $color-w;
+  }
+  em {
+    display: block;
+    font-size: 22px;
+    height: 40px;
+    line-height: 40px;
+    color: $color-w;
+  }
+  button[type="button"] {
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    font-size: 30px;
+    color: #fff;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+}
+
+// main-content
+.main-content {
+  max-width: 1920px;
+  background: $main-content-bg-color;
+  a {
+    text-decoration: none;
+    color: #202020;
+  }
+  section {
+    margin-top: 20px;
+    background: $main-content-inner-bg-color;
+    &.recommend {
+      background: $main-content-bg-color;
+    }
+    & > div:nth-child(1) {
+      @include clearfix;
+      height: 42px;
+      margin-bottom: 8px;
+      padding: 0 10px;
+      h3, a {
+        line-height: 42px; 
+      }
+      h3 {
+        float: left;
+        font-weight: 700;
+      }
+      a {
+        float: right;
+        color: $main-content-font-color;
+      }
+    }
+  }
+  
+}
+
+// main-content > recommend
+
+.recommend {
+  background: $main-content-bg-color;
+  box-sizing: border-box;
+  padding: 0 15px;
+  h3 {
+    height: 42px;
+    line-height: 42px;
+    padding: 20px 10px;
+  }
+  & > div:last-child {
+    box-sizing: border-box;
+    padding: 16px;
+    background: $main-content-inner-bg-color;
+    h4 {
+      font-weight: 700;
+      color: #202020;
+    }
+    p {
+      margin-top: 10px;
+      color: $main-content-font-color;
+    }
+  }
+}
