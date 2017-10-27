@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
 // 컴포넌트
-import List from '../components/List/List';
+import List from '../components/List';
 // 유틸
 import * as utils from '../utils/ListUtils';
 

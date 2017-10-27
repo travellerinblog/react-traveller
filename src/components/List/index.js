@@ -149,7 +149,7 @@ class List extends Component {
     }
     render() {
         return(
-          <div className="List">
+          <div className="list">
             <h1>당신의 다음 목적지는 어디인가요?</h1>
             <ListSearch/>
             <ListSort 
@@ -158,7 +158,7 @@ class List extends Component {
             />
             <ListItems list_state={this.state}/>
             <ListPages list_state={this.state}/>
-            {/* <ListFooter/> */}
+            <ListFooter/>
           </div>
         );
     }

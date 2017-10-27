@@ -4,9 +4,12 @@ import * as actions from '../actions';
 import * as firebase from "firebase";
 import {connect} from 'react-redux';
 import update from 'react-addons-update';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
 
 // 컴포넌트
 import ListContainer from '../containers/ListContainer';
+import ReadContainer from '../containers/ReadContainer';
 import Editor from './Editor';
 
 // firebase 관련 설정
@@ -27,7 +30,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
   }
-	componentWillMount() {
+	componentDidMount() {
 		// DB에서 받은 값을 배열로 변환하여 전달.
 		DB.on('value', snapshot => {
 			const snap = snapshot.val();
@@ -48,10 +51,17 @@ class App extends Component {
 
 	render() {
 		return (
-			<div>
-				<ListContainer/>
-				{/* <Editor /> */}
-			</div>
+			<Router>
+				<div>
+					<Switch>
+						<Route exact path="/" component={ListContainer} />
+						<Route path="/List" component={ListContainer} />
+						<Route path="/Read/:key" component={ReadContainer} />
+						<Route path="/Editor/:userid" component={Editor} />
+					</Switch>
+					{/* <Editor /> */}
+				</div>
+			</Router>
 		);
 	}
 }
