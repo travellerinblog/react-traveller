@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
+import update from 'react-addons-update';
+
 // 컴포넌트
 import ListSort from './ListSort';
 import ListSearch from './ListSearch';
 import ListItems from './ListItems';
 import ListPages from './ListPages';
 import ListFooter from './ListFooter';
-import update from 'react-addons-update';
 
 
 class List extends Component {
@@ -17,6 +18,7 @@ class List extends Component {
         this.state = {
             'type': "",
             'list': [],
+            'search_flag': '',
             'page_amount': 1,
             'page_index': 0
         }
@@ -26,8 +28,13 @@ class List extends Component {
         this.listPageSetting = this.listPageSetting.bind(this);
     }
     shouldComponentUpdate(nextProps, nextState) { 
+        // 스토어의 페이지 인덱스와 스테이트의 인덱스를 동일하게 해줌.
         if (nextProps.sorted_list.page_index !== this.state.page_index) {
             this.setState(nextProps.sorted_list);
+        } 
+        // DB 갱신된 경우
+        if (nextProps.app_lists!==this.props.app_lists) {
+            this.listCheckSortType(nextProps.app_lists);
         }
         return true; 
     }
@@ -63,7 +70,7 @@ class List extends Component {
      * @memberof List 
      */ 
     getListLocationSearch() { 
-        const lists = this.props.app_lists; 
+        const lists = JSON.parse(JSON.stringify(this.props.app_lists)); 
         const compare_address_type = ["country",  
                                       "administrative_area_level_1", 
                                       "administrative_area_level_2", 
@@ -110,22 +117,27 @@ class List extends Component {
      * @returns Sort Type에 맞는 메소드 
      * @memberof List
     * */
-    listCheckSortType() {
-        const sorted_list = this.props.sorted_list;
-        const app_lists = this.props.app_lists;
+    listCheckSortType(nextProps) {
+        const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
+        const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
         const list_sort_type = sorted_list && sorted_list.type !== "" ? sorted_list.type : "" ;
+        let after_dispatch_list = {}
         let lists = [];
         switch (list_sort_type) {
             case "LIST_SORT_BY_LATEST":
-                // (수정필요: lists 변수에 담을 값, DB 변경된 경우 app_lists를 가져와야 한다.)
-                lists = (sorted_list.list.length !== app_lists.length || "LIST_LOCATION_SEARCH") ? sorted_list.list : app_lists
-                this.props.handleListSortByLastest(lists);
-                this.setState(this.props.sorted_list);
+            // (수정필요: lists 변수에 담을 값, DB 변경된 경우 app_lists를 가져와야 한다.)
+                lists = sorted_list.search_flag === 'search' ? sorted_list.list : app_lists
+                after_dispatch_list = this.props.handleListSortByLastest(lists);
+                this.setState(update(this.state, {
+                    'list' : {$set: after_dispatch_list}
+                }));
                 return ;
-            case "LIST_SORT_BY_POPULAR":
-                lists = (sorted_list.list.length !== app_lists.length || "LIST_LOCATION_SEARCH") ? sorted_list.list : app_lists
-                this.props.handleListSortByPopular(lists);
-                this.setState(this.props.sorted_list);
+                case "LIST_SORT_BY_POPULAR":
+                lists = sorted_list.search_flag === 'search' ? sorted_list.list : app_lists
+                after_dispatch_list = this.props.handleListSortByPopular(lists);
+                this.setState(update(this.state, {
+                    'list' : {$set: after_dispatch_list}
+                }));
                 return ;
             case "LIST_LOCATION_SEARCH":
                 this.getListLocationSearch();
@@ -137,7 +149,6 @@ class List extends Component {
                 return ;
         }
     }
-
     /**
      * 리스트 아이템 개수로 표시한 페이지 수 계산.
      * 
@@ -150,12 +161,11 @@ class List extends Component {
     render() {
         return(
           <div className="list">
-            <h1>당신의 다음 목적지는 어디인가요?</h1>
-            <ListSearch/>
-            <ListSort 
-                onListSortByLastest={() => {this.props.handleListSortByLastest(this.state.list)}} 
-                onListSortByPopular={() => {this.props.handleListSortByPopular(this.state.list)}}
-            />
+            <h1 className="list-title">당신의 다음 목적지는 어디인가요?</h1>
+            <div className="list-search-sort-wrap">
+                <ListSearch/>
+                <ListSort onListSortByLastest={() => this.props.handleListSortByLastest(this.state.list)} onListSortByPopular={() => this.props.handleListSortByPopular(this.state.list)} />
+            </div>
             <ListItems list_state={this.state}/>
             <ListPages list_state={this.state}/>
             <ListFooter/>

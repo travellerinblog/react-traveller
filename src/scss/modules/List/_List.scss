@@ -1,0 +1,53 @@
+@import '../../partials';
+
+.list{
+  box-sizing: border-box;
+  padding: 0 10px;
+  .list-title{
+    margin-top: 40px;
+    font-size: 20px;
+  }
+  .list-search-sort-wrap{
+    margin-top: 24px;
+    background: pink;
+    .list-search-input{
+      width: 685px;
+      height: 35px;
+    }
+  }
+  background: yellow;
+
+
+  @include tablet {
+    padding: 0 15px;
+    .list-title{
+      margin-top: 50px;
+      font-size: 20px; 
+    }
+    .list-search-sort-wrap{
+      margin-top: 32px;
+      background: yellow;
+      .list-search-input{
+        width: 345px;
+      }
+    }
+    background: blue;
+  }
+
+
+  @include desktop {
+    padding: 0 20px;
+    .list-title{
+      margin-top: 117px;
+      font-size: 42px; 
+    }
+    .list-search-sort-wrap{
+      margin-top: 64px;
+      background: blue;
+      .list-search-input{
+        width: 567px;
+      }
+    }
+    background: pink;
+  }
+}

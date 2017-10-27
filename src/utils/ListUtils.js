@@ -5,7 +5,7 @@
    * @return {object} - 최신순으로 정렬된 list
 */
 export const getListSortByLastest = (lists) => {
-    return lists.sort((a, b)=> b.write_date - a.write_date);
+  return lists.sort((a, b)=> b.write_date - a.write_date);
 }
 
   

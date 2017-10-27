@@ -23,15 +23,15 @@ const mapDispatchToProps = (dispatch) => ({
     handleListSortByPopular: (lists) => {
         const sorted_list_item_array = utils.getListSortByPopular(lists);
         dispatch(actions.listSortByPopular(sorted_list_item_array));
+        return sorted_list_item_array;
     },
     handleListLocationSearch: (lists) => dispatch(actions.listLocationSearch(lists)),
     handleListPageCount: (lists) => {
         const page_amount = utils.getListPageAmount(lists);
         dispatch(actions.listPageCount(page_amount))
+        return;
     },
-    handleListPageIndexing: () => {
-        dispatch(actions.listPageIndexing(index));
-    },
+    handleListPageIndexing: () => dispatch(actions.listPageIndexing(index)),
     throwSearchErrorMessage: (error_type, message) => dispatch(actions.throwSearchErrorMessage(error_type, message))
 });
 

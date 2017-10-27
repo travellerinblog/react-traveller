@@ -32,19 +32,20 @@ const ListItems = ({list_state}) => {
   } else {
     // 화면에 보여줄 <li> 요소를 만든다.
     for(let i = page_start; i <= page_end; i++ ){
+      // 만약에 i의 값이 list의 총 길이보다 크다면 loop 종료.
+      if (i > list_state.list.length - 1) break;
+      
       const date = list_state.list[i].write_date
       let link_path = '/Read/' + list_state.list[i].key;
       let date_convert = date.slice(0,4) + "." + date.slice(4,6) + "." + date.slice(6,8)
-      // 만약에 i의 값이 list의 총 길이보다 크다면 loop 종료.
-      if (i > list_state.list.length - 1) break;
       list_items_render.push(
       <li className='list-item' key={list_state.list[i].key}>
         <Link to={link_path}>
           <figure>
-              <img src ={list_state.list[i].title_img} alt={list_state.list[i].title} />
+              {/* <img src ={list_state.list[i].title_img} alt={list_state.list[i].title} /> */}
               <figcaption className='list-item-contents'>
                 <h2 className="list-item-title">{list_state.list[i].title}</h2>
-                <p className="list-item-content">{date_convert} |{list_state.list[i].location.country} | {list_state.list[i].name} | 조회수 {list_state.list[i].view} </p>
+                <p className="list-item-content">{list_state.list[i].write_date} |{list_state.list[i].location.country} | {list_state.list[i].name} | 조회수 {list_state.list[i].view} </p>
               </figcaption>
           </figure>
         </Link>
@@ -55,7 +56,7 @@ const ListItems = ({list_state}) => {
 
   return (
     <ul className="list-items">
-      {list_items_render}
+      { list_items_render }
     </ul>
   );
 }

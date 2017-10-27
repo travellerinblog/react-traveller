@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+ 
 const ListSort = ({onListSortByLastest, onListSortByPopular}) => {
     return (
       <ul className="list-sort">
@@ -9,7 +9,7 @@ const ListSort = ({onListSortByLastest, onListSortByPopular}) => {
       </ul>
     );
 }
-
+ 
 const propTypes = {
     onListSortByLastest: PropTypes.func,
     onListSortByPopular: PropTypes.func
@@ -18,5 +18,5 @@ const defaultProps = {
     onListSortByLastest: () => console.warn('onSortByLastest is not defined'),
     onListSortByPopular: () => console.warn('onSrotByPopular is not defined')
 };
-
+ 
 export default ListSort;
