@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
  
 const ListSort = ({onListSortByLastest, onListSortByPopular}) => {
     return (
-      <ul className="list-sort">
+      <ul className="list-sort-selector">
         <li><button type="button" onClick={() => {onListSortByLastest()}}>최신순</button></li>
         <li><button type="button" onClick={() => {onListSortByPopular()}}>인기순</button></li>
       </ul>

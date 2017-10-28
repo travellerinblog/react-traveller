@@ -20,19 +20,23 @@ class List extends Component {
             'list': [],
             'search_flag': '',
             'page_amount': 1,
-            'page_index': 0
+            'page_index': 0,
+            'is_sort_selected': true
         }
         this.autocomplete = {};
         this.initGoogle = this.initGoogle.bind(this);
         this.listCheckSortType = this.listCheckSortType.bind(this);
         this.listPageSetting = this.listPageSetting.bind(this);
+        this.llistSelectorOnClick = this.llistSelectorOnClick.bind(this);
+        this.setWrapperRef = this.setWrapperRef.bind(this); 
+        this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     shouldComponentUpdate(nextProps, nextState) { 
         // 스토어의 페이지 인덱스와 스테이트의 인덱스를 동일하게 해줌.
         if (nextProps.sorted_list.page_index !== this.state.page_index) {
             this.setState(nextProps.sorted_list);
         } 
-        // DB 갱신된 경우
+        // DB 갱신된 경우, 변경된 DB로 정렬 후 state를 변경한다.
         if (nextProps.app_lists!==this.props.app_lists) {
             this.listCheckSortType(nextProps.app_lists);
         }
@@ -47,6 +51,9 @@ class List extends Component {
 
         // 페이지 세팅(수정필요: setTimeout)
         setTimeout(this.listPageSetting, 2500);
+
+        // 포커스 나갔을 때 이벤트
+        document.addEventListener('mousedown', this.handleClickOutside);
         
     }
     // google 초기화 
@@ -57,7 +64,6 @@ class List extends Component {
         this.autocomplete = new google.maps.places.Autocomplete(input, { types: ['(regions)'] }); 
         this.autocomplete.addListener('place_changed', this.getListLocationSearch.bind(this)); 
     }
-
     
     /** 
      * 도시/나라로 검색한 값이 있는 list를 찾는 메소드 
@@ -111,6 +117,8 @@ class List extends Component {
     }    
 
 
+
+
     /**
      * 렌더할 때, 이전에 정렬했던 타입을 확인 후 리스트를 재정렬(디폴트 최신순)
      * @property {string} list_sort_type - 이전에 리스트를 정렬한 타입(인기순/최신순/검색) 검색인 경우 기존의 
@@ -125,18 +133,19 @@ class List extends Component {
         let lists = [];
         switch (list_sort_type) {
             case "LIST_SORT_BY_LATEST":
-            // (수정필요: lists 변수에 담을 값, DB 변경된 경우 app_lists를 가져와야 한다.)
+                // serach_flag 가 'search'인 경우는 전체 리스트가 아니라, 검색한 리스트(지금 화면에 보여지고 있는)를 가지고 정렬해야한다.
                 lists = sorted_list.search_flag === 'search' ? sorted_list.list : app_lists
+                // setState를 하기 위해 정렬된 list를 반환받는다.
                 after_dispatch_list = this.props.handleListSortByLastest(lists);
                 this.setState(update(this.state, {
-                    'list' : {$set: after_dispatch_list}
+                    'list' : {$set: after_dispatch_list},
                 }));
                 return ;
                 case "LIST_SORT_BY_POPULAR":
                 lists = sorted_list.search_flag === 'search' ? sorted_list.list : app_lists
                 after_dispatch_list = this.props.handleListSortByPopular(lists);
                 this.setState(update(this.state, {
-                    'list' : {$set: after_dispatch_list}
+                    'list' : {$set: after_dispatch_list},
                 }));
                 return ;
             case "LIST_LOCATION_SEARCH":
@@ -149,6 +158,8 @@ class List extends Component {
                 return ;
         }
     }
+
+
     /**
      * 리스트 아이템 개수로 표시한 페이지 수 계산.
      * 
@@ -158,13 +169,62 @@ class List extends Component {
         this.props.handleListPageCount(this.props.sorted_list);
         this.setState(this.props.sorted_list);
     }
+
+
+    /**
+     * 최신순/인기순 선택창 토글
+     * 
+     * @memberof List
+     */
+    llistSelectorOnClick() {
+        this.setState(update(this.state, {
+            'is_sort_selected' : {$set: !this.state.is_sort_selected}
+        }));
+    }
+
+    /**
+     * 외부요소를 누르면 최신순/인기순 선택창 닫힘.
+     * 
+     * @memberof List
+     */
+    setWrapperRef(node) {
+        this.wrapperRef = node;
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+            this.setState(update(this.state, {
+                'is_sort_selected' : {$set: false}
+            }));
+        }
+    }
+
     render() {
+        const list_sort_selector_render = this.state.is_sort_selected ? 
+            <ListSort onListSortByLastest={() => {
+                    this.props.handleListSortByLastest(this.state.list);
+                    // 선택창 닫기.
+                    this.setState(update(this.state, {
+                        'is_sort_selected' : {$set: !this.state.is_sort_selected}
+                    }));
+                }} 
+                onListSortByPopular={() => {
+                    this.props.handleListSortByPopular(this.state.list);
+                    //선택창 닫기.
+                    this.setState(update(this.state, {
+                        'is_sort_selected' : {$set: !this.state.is_sort_selected}
+                    }));
+                }}/> : '';
+        const list_selected_sort_item = this.props.sorted_list.type === "LIST_SORT_BY_POPULAR" ? "인기순" : "최신순";
         return(
           <div className="list">
             <h1 className="list-title">당신의 다음 목적지는 어디인가요?</h1>
-            <div className="list-search-sort-wrap">
+            <div className="list-search-sort-box">
                 <ListSearch/>
-                <ListSort onListSortByLastest={() => this.props.handleListSortByLastest(this.state.list)} onListSortByPopular={() => this.props.handleListSortByPopular(this.state.list)} />
+                <div className="list-sort-box" ref={this.setWrapperRef}>
+                    <button type="button" onClick={this.llistSelectorOnClick}>{list_selected_sort_item}</button>
+                    {list_sort_selector_render}
+                </div>
             </div>
             <ListItems list_state={this.state}/>
             <ListPages list_state={this.state}/>
