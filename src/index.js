@@ -11,6 +11,8 @@ import App from './components/App';
 
 const store = createStore(reducers);
 
+console.log(App);
+
 ReactDOM.render(
   <Provider store={store}>
     <App />

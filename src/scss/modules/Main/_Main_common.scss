@@ -12,6 +12,14 @@ $main-content-inner-bg-color: #fff;
   position: relative;
   height: 720px;
   background: #000;
+  video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: auto;
+  }
 }
 .video-content {
   p {

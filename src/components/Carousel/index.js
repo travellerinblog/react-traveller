@@ -18,49 +18,26 @@ export default class Carousel extends Component {
       mouse_move_x: 0,
       // 마우스가 움직이는 방향
       mouse_move_direction: '',
+      // 마우스 클릭한 좌표
+      posX: 0,
       // carousel_wrapper의 부모의 넓이
       parent_width: 0
     }
-    // this.state = {
-    //   // 초기에만 구동하도록 하는 로직을 제어하기 위한 변수
-    //   init_flag: false,
-    //   // 마우스가 클릭 되었는지
-    //   clicked_mouse_flag: false,
-    //   // 현재 보여지는 페이지 
-    //   page: 0,
-    //   // 총 페이지의 숫자
-    //   max_page: 0,
-    //   // carousel_wrapper의 부모의 넓이
-    //   parent_width: 0
-    // }
 
-    this._onClickPrevBtn = this._onClickPrevBtn.bind(this);
-    this._onClickNextBtn = this._onClickNextBtn.bind(this);
-    this._onMouseDown = this._onMouseDown.bind(this);
-    this._onMouseUp = this._onMouseUp.bind(this);
-    this._onMouseMove = this._onMouseMove.bind(this);
-    this._setPageState = this._setPageState.bind(this);
     this._setWindowResizeEvent = this._setWindowResizeEvent.bind(this);
-    
-    this._component_getCarouselItems = this._component_getCarouselItems.bind(this);
-    this._component_getCarouselTime = this._component_getCarouselTime.bind(this);
-    this._component_getCarouselEtc = this._component_getCarouselEtc.bind(this);
-    this._component_setComponentSize = this._component_setComponentSize.bind(this);
-    this._component_setResizeCarouselViews = this._component_setResizeCarouselViews.bind(this);
-    this._component_moveCarousel = this._component_moveCarousel.bind(this);
-
   }
   
   
-
   /**
    * 
-   * @function _onClickPrevBtn prevBtn을 클릭하면 page 스태이트를 -1 줄여주는 함수.
-   * @function _onClickNextBtn nextBtn을 클릭하면 page 스태이트를 1 증가시켜주는 함수.
+   * @func _onClickPrevBtn prevBtn을 클릭하면 page 스태이트를 -1 줄여주는 함수.
+   * @func _onClickNextBtn nextBtn을 클릭하면 page 스태이트를 1 증가시켜주는 함수.
+   * @func _onMouseDown 마우스를 눌렀을 때 clicked_mouse_flag(마우스를 감지하는 변수)를 true로 바꿔주는 함수.
+   * @func _onMouseUp 마우스를 눌렀을 때 clicked_mouse_flag(마우스를 감지하는 변수)를 false로 바꿔주는 함수.
+   * @func _onMouseMove 마우스를 움직였을 때 mouse_move_x가 현재 마우스 포인터 보다 크면 direction을 next 아니면 prev로 바꿔주는 함수.
+   * @func _setPageState direction이 next면 state의 페이지를 1증가 prev면 1감소시키는 함수. 
    * 
    */
-
-
 
   _onClickPrevBtn = () => {
     this._setPageState('prev');
@@ -70,9 +47,13 @@ export default class Carousel extends Component {
    this._setPageState('next');
   }
 
-  _onMouseDown = () => {
+  _onMouseDown = (e) => {
+    if( this.state.clicked_mouse_flag ) {
+      this._component_mouseMoveCarousel(e.clientX);
+    }
     this.setState({
-      clicked_mouse_flag: true
+      clicked_mouse_flag: true,
+      posX: e.clientX
     })
   }
   _onMouseUp = () => {
@@ -80,16 +61,20 @@ export default class Carousel extends Component {
     this._setPageState(this.state.mouse_move_direction);
     this.setState({
       clicked_mouse_flag: false,
-      mouse_move_direction: ''
+      mouse_move_direction: '',
+      posX: 0
     })
   }
   _onMouseMove = (e) => {
     
-    let direction = '';
+    let direction = '', clientX = e.clientX;
 
+    
     if( this.state.clicked_mouse_flag ) {
+
+      this._component_mouseMoveCarousel(clientX);
       
-      if( this.state.mouse_move_x > e.clientX ) {
+      if( this.state.posX > clientX ) {
         direction = 'next';
       } else {
         direction = 'prev';    
@@ -97,7 +82,6 @@ export default class Carousel extends Component {
       
     }
     this.setState({
-      mouse_move_x: e.clientX,
       mouse_move_direction: direction
     })
   }
@@ -130,10 +114,7 @@ export default class Carousel extends Component {
    * 
    * @func componentDidMount carousel 태그들이 마운트 된 후 carousel 부모의 넓이를 가져와서 state에 저장
    * @func componentDidUpdate page state가 변경되면 캐러샐을 움직여줌.
-   * @func _setWindowResizeEvent 윈도우 이벤트에 적용할 로직들의 모임.
-   * @func _component_getCarouselItems carousel item들의 정보가 담겨있는 props를 받아 rendering시켜주는 함수.
-   * @func _component_setResizeCarouselViews 브라우저가 resize가 될 때마다 캐러샐의 componentSize를 변경시킴.
-   * @func _component_setComponentSize 마운트 된 캐러샐(ul, li)의 사이즈를 지정.
+   * @func componentWillUnmount Carousel이 unmount될 때 resize이벤트를 해제시켜주는 함수.
    */
 
 
@@ -163,9 +144,15 @@ export default class Carousel extends Component {
     $(window).off('resize', this._setWindowResizeEvent);
   }
 
+  /**
+   * @func _setWindowResizeEvent 윈도우 이벤트에 적용할 로직들의 모임.
+   * @func _component_getCarouselItems carousel item들의 정보가 담겨있는 props를 받아 rendering시켜주는 함수.
+   * @func _component_setResizeCarouselViews 브라우저가 resize가 될 때마다 캐러샐의 componentSize를 변경시킴.
+   * @func _component_setComponentSize 마운트 된 캐러샐(ul, li)의 사이즈를 지정.
+   * @func _component_moveCarousel 캐러샐을 움직여주는 함수
+   */
 
-
-  
+   
   _setWindowResizeEvent() {
     this._component_setResizeCarouselViews();
   }
@@ -202,9 +189,9 @@ export default class Carousel extends Component {
                 />
               </div>
               <figcaption>
-                <h3 className="title">{data.title}</h3>
-                { this._component_getCarouselTime(data.time) }
-                { this._component_getCarouselEtc(data.etc) }
+                <Title title={data.title}/>
+                <Time time={data.time}/>
+                <Etc etc={data.etc}/>
               </figcaption>
             </figure>
           </a>
@@ -212,24 +199,7 @@ export default class Carousel extends Component {
       );
     });
   }
-  _component_getCarouselTime(time) {
-    if( time ) {
-      return (<time dateTime={time}>{time}</time>);
-    } else {
-      return '';
-    }
-  }
-  _component_getCarouselEtc(etc) {
-    if( etc ) {
-      return (
-        <em>
-          {etc.country} | {etc.user_name} | {etc.view_count}
-        </em>
-      )
-    } else {
-      return '';
-    }
-  }
+  
   _component_setComponentSize = (parent, view) => {
     let parent_width = parseInt(parent.css('width'));
     let ul = $(this.refs.carouselWrapper).find('.carousel-list > ul'),
@@ -272,6 +242,21 @@ export default class Carousel extends Component {
     ul.stop( true, true ).animate({ left: -(move_size * page) + 'px' }, 500);
   }
 
+  _component_mouseMoveCarousel = (clientX) => {
+
+
+    let depth = 80, posX = this.state.posX,
+        ul = $(this.refs.carouselWrapper).find('.carousel-list > ul');
+
+    let distance = Math.abs(posX - clientX);
+
+    if( this.state.mouse_move_direction === 'next') {
+      ul.stop(true, true).animate({ left: parseInt(ul.css('left')) - distance + 'px' });
+    } else {
+      ul.stop(true, true).animate({ left: parseInt(ul.css('left')) + distance + 'px' });
+    }
+  }
+
   render() {
 
     return (
@@ -281,7 +266,7 @@ export default class Carousel extends Component {
         >
         <div 
           className="carousel-list"
-          onMouseDown={ (e) => { e.stopPropagation(); this._onMouseDown() } }
+          onMouseDown={ (e) => { e.stopPropagation(); this._onMouseDown(e) } }
           onMouseUp={ (e) => { e.stopPropagation(); this._onMouseUp() } }
           onMouseMove={ (e) => { e.stopPropagation(); this._onMouseMove(e) } }
         >
@@ -303,4 +288,54 @@ export default class Carousel extends Component {
       </div>
     )
   }
+}
+
+
+
+const Title = ({title}) => {
+
+    return ( <h3 className="title">{title}</h3> );
+}
+
+
+const Etc = ({etc}) => {
+  const renderEtc = () => {
+    if( etc ) {
+      return (
+        <em>
+          {etc.country} | {etc.user_name} | {etc.view_count}
+        </em>
+      )
+    } else {
+      return '';
+    }
+  }
+  return ( renderEtc() );
+}
+
+
+const Time = ({time}) => {
+
+  const renderTime = () => {
+    if( time ) {
+      return (<time dateTime={time}>{time}</time>);
+    } else {
+      return '';
+    }
+  }
+    return ( renderTime() );
+}
+
+
+Carousel.propTypes = {
+  carousel_item_info: PropTypes.array
+}
+Title.propTypes = {
+  title: PropTypes.string
+}
+Etc.propTypes = {
+  etc: PropTypes.object
+}
+Time.propTypes = {
+  time: PropTypes.string
 }
