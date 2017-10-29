@@ -44,6 +44,7 @@ class List extends Component {
     }
     componentDidMount() {
         // DB값 가져오기(수정필요: setTimeout)
+        console.log('list index cdm: ', this.props)
         setTimeout(this.listCheckSortType, 2000);
         
         // google 초기화 
@@ -128,6 +129,7 @@ class List extends Component {
     listCheckSortType(nextProps) {
         const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
         const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
+        console.log('list index app_lists: ', app_lists);
         const list_sort_type = sorted_list && sorted_list.type !== "" ? sorted_list.type : "" ;
         let after_dispatch_list = {}
         let lists = [];

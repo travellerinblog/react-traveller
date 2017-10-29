@@ -1,5 +1,6 @@
-import { LIST_DB } from '../actions/';
+import { LIST_DB } from '../actions/ActionTypes';
 
+console.log('reducer list: ', LIST_DB);
 function dataProcessing(data) {
   
   return Object.keys(data).map(key => {

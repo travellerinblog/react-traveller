@@ -4,7 +4,7 @@ import Carousel from '../Carousel/';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { listDB, userDB } from '../actions/';
+import { listDB, userDB } from '../../actions/';
 
 
 class Main extends Component {
@@ -99,6 +99,7 @@ class Main extends Component {
   }
   
   render() {
+    
     return (
       <main>
         <div className="visual-container">
@@ -164,3 +165,5 @@ const mapStateToProps = ({ list_db, user_db }) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators( { listDB, userDB } , dispatch );
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
