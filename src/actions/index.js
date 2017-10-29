@@ -1,9 +1,20 @@
+import axios from 'axios';
 import * as types from './ActionTypes';
 
-export function fetchDB (data){
+export function listDB() {
+  
+  const request = axios.get('https://traveller-in-blog.firebaseio.com/lists.json');
   return {
-    type: types.FETCH_DB,
-    data
+    type: types.LIST_DB,
+    payload: request
+  }
+}
+export function userDB() {
+  
+  const request = axios.get('https://traveller-in-blog.firebaseio.com/users.json');
+  return {
+    type: types.USER_DB,
+    payload: request
   }
 }
 
@@ -49,5 +60,4 @@ export function throwSearchErrorMessage (error_type, message) {
     message
   }
 }
-
 

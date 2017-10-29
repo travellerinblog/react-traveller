@@ -1,13 +1,15 @@
 
 import { combineReducers } from 'redux';
-import DB from './DB';
 import list from './List';
 import Errors from './Errors';
+import Lists from './reducer_lists';
+import Users from './reducer_users';
 
 const reducers = combineReducers({
-  getDB: DB,
   list,
-  Errors
+  Errors,
+  list_db: Lists,
+  user_db: Users
 });
 
 export default reducers;

@@ -7,8 +7,9 @@ import List from '../components/List';
 import * as utils from '../utils/ListUtils';
 
 const mapStateToProps = (state) => {
+    console.log('ListContainer: ', state);
     return {
-        app_lists: state.getDB.DB_lists,
+        app_lists: state.list_db,
         sorted_list: state.list,
         errors: state.Errors
     }
@@ -16,6 +17,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     handleListSortByLastest : (lists) => {
+        console.log('lists: ', lists);
         const sorted_list_item_array = utils.getListSortByLastest(lists);
         dispatch(actions.listSortByLastest(sorted_list_item_array));
         return sorted_list_item_array;

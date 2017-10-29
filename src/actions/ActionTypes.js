@@ -1,4 +1,5 @@
-export const FETCH_DB = 'FETCH_DB';
+export const LIST_DB = 'LIST_DB';
+export const USER_DB = 'USER_DB';
 
 export const LIST_SORT_BY_LATEST ='LIST_SORT_BY_LATEST';
 export const LIST_SORT_BY_POPULAR ='LIST_SORT_BY_POPULAR';

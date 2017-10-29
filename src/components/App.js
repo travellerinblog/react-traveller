@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as actions from '../actions';
-import * as firebase from "firebase";
-import {connect} from 'react-redux';
-import update from 'react-addons-update';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
@@ -11,42 +7,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ListContainer from '../containers/ListContainer';
 import ReadContainer from '../containers/ReadContainer';
 import Editor from './Editor';
-
-// firebase 관련 설정
-const config = {
-	apiKey: "AIzaSyBZeqdOpwcLz0WlvJPLzu0L6qGrzl0UhHY",
-	authDomain: "traveler-in-blog.firebaseapp.com",
-	databaseURL: "https://traveler-in-blog.firebaseio.com",
-	projectId: "traveler-in-blog",
-	storageBucket: "traveler-in-blog.appspot.com",
-	messagingSenderId: "448524690938"
-};
-firebase.initializeApp(config);
-
-//firebase DB 
-const DB = firebase.database().ref();
+import Main from './Main/index';
 
 class App extends Component {
 	constructor(props) {
-		super(props);
-  }
-	componentDidMount() {
-		// DB에서 받은 값을 배열로 변환하여 전달.
-		DB.on('value', snapshot => {
-			const snap = snapshot.val();
-			const lists = Object.keys(snap.lists).map(key => {
-				const list_item = snap.lists[key];
-				// Obejct.keys로 객체를 순환하면 key값이 배열에 들어가지 않기 떄문에, key값을 추가
-				list_item.key = key;
-				return list_item
-			})
-			const users = Object.keys(snap.users).map(key => snap.users[key]);
-			const DB_data = {
-				lists,
-				users
-			}
-			this.props.fetchDB(DB_data);
-		})
+ 	 super(props);
 	}
 
 	render() {
@@ -54,7 +19,7 @@ class App extends Component {
 			<Router>
 				<div>
 					<Switch>
-						<Route exact path="/" component={ListContainer} />
+						<Route exact path="/" component={Main} />
 						<Route path="/List" component={ListContainer} />
 						<Route path="/Read/:key" component={ReadContainer} />
 						<Route path="/Editor/:userid" component={Editor} />
@@ -72,4 +37,4 @@ App.propTypes = {
 App.defaultProps = {
 }
 
-export default connect(null, actions)(App);
+export default App;
