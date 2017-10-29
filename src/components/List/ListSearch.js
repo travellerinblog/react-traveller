@@ -15,7 +15,7 @@ class ListSearch extends Component {
     render() {
         const error_message = this.props.error.error_type === 'search' ? this.props.error.message : ''; 
         return(
-            <div>
+            <div className="list-search-box">
                 <input className="list-search-input" type="text" placeholder="검색할 나라/도시를 입력해주세요" />
                 <span> {error_message} </span>
             </div>

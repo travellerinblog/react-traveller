@@ -2,22 +2,38 @@
 
 .list{
   box-sizing: border-box;
-  padding: 0 10px;
-  .list-title{
-    margin-top: 40px;
-    font-size: 20px;
+  a {
+    color: inherit;
+    text-decoration: none;
   }
-  .list-search-sort-box{
-    margin-top: 24px;
-    background: pink;
-    .list-search-input{
-      width: 685px;
-      height: 35px;
+  .list-item-image {
+    width: 100%;
+  }
+  @include mobile{
+    padding: 0 10px;
+    .list-title{
+      margin-top: 40px;
+      font-size: 20px;
     }
+    .list-search-sort-box{
+      margin-top: 24px;
+      background: pink;
+      .list-search-input{
+        width: 100%;
+        height: 35px;
+      }
+      .list-sort-box{
+        .list-selected-item{
+          width: 100%;
+          height: 34px;
+        }
+      }
+    }
+    .list-items{
+      margin-top: 40px;
+    }
+    background: yellow;
   }
-  background: yellow;
-
-
   @include tablet {
     padding: 0 15px;
     .list-title{
@@ -27,9 +43,20 @@
     .list-search-sort-box{
       margin-top: 32px;
       background: yellow;
-      .list-search-input{
+      .list-search-box {
         width: 345px;
+        .list-search-input{
+          width: 345px;
+        }
       }
+      .list-sort-box {
+        .list-selected-item{
+          width: 105px;
+          height: 36px;
+        }
+      }
+    }
+    .list-items{
     }
     background: blue;
   }
@@ -47,6 +74,15 @@
       .list-search-input{
         width: 567px;
       }
+      .list-sort-box{
+        float: right;
+        .list-selected-item{
+          
+        }
+      }
+    }
+    .list-items{
+      margin-top: 48px;
     }
     background: pink;
   }

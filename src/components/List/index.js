@@ -21,14 +21,14 @@ class List extends Component {
             'search_flag': '',
             'page_amount': 1,
             'page_index': 0,
-            'is_sort_selected': true
+            'is_sort_selected': false
         }
         this.autocomplete = {};
         this.initGoogle = this.initGoogle.bind(this);
         this.listCheckSortType = this.listCheckSortType.bind(this);
         this.listPageSetting = this.listPageSetting.bind(this);
         this.llistSelectorOnClick = this.llistSelectorOnClick.bind(this);
-        this.setWrapperRef = this.setWrapperRef.bind(this); 
+        this.setSortSelectorRef = this.setSortSelectorRef.bind(this); 
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
     shouldComponentUpdate(nextProps, nextState) { 
@@ -187,18 +187,19 @@ class List extends Component {
      * 
      * @memberof List
      */
-    setWrapperRef(node) {
-        this.wrapperRef = node;
+    setSortSelectorRef(node) {
+        // node는 ref가 연결된 list-sort-box div
+        this.sortSelectorRef = node;
     }
 
     handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        // list-sort-box가 클릭된 요소를 포함하고 있지 않다면 setState를 실행해서 보이고있는 것을 닫아준다.
+        if (this.sortSelectorRef && !this.sortSelectorRef.contains(event.target)) {
             this.setState(update(this.state, {
                 'is_sort_selected' : {$set: false}
             }));
         }
     }
-
     render() {
         const list_sort_selector_render = this.state.is_sort_selected ? 
             <ListSort onListSortByLastest={() => {
@@ -221,8 +222,8 @@ class List extends Component {
             <h1 className="list-title">당신의 다음 목적지는 어디인가요?</h1>
             <div className="list-search-sort-box">
                 <ListSearch/>
-                <div className="list-sort-box" ref={this.setWrapperRef}>
-                    <button type="button" onClick={this.llistSelectorOnClick}>{list_selected_sort_item}</button>
+                <div className="list-sort-box" ref={this.setSortSelectorRef}>
+                    <button className="list-selected-item" type="button" onClick={this.llistSelectorOnClick}>{list_selected_sort_item}</button>
                     {list_sort_selector_render}
                 </div>
             </div>

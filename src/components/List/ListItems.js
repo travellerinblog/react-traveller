@@ -42,7 +42,7 @@ const ListItems = ({list_state}) => {
       <li className='list-item' key={list_state.list[i].key}>
         <Link to={link_path}>
           <figure>
-              {/* <img src ={list_state.list[i].title_img} alt={list_state.list[i].title} /> */}
+              <img className="list-item-image" src ={list_state.list[i].title_img} alt={list_state.list[i].title} />
               <figcaption className='list-item-contents'>
                 <h2 className="list-item-title">{list_state.list[i].title}</h2>
                 <p className="list-item-content">{list_state.list[i].write_date} |{list_state.list[i].location.country} | {list_state.list[i].name} | 조회수 {list_state.list[i].view} </p>
