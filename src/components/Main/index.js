@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from '../Carousel/';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { listDB, userDB } from '../actions/';
 
-export default class Main extends Component {
+
+class Main extends Component {
   constructor(props) {
     super(props);
 
@@ -88,6 +92,12 @@ export default class Main extends Component {
       ]
     }
   }
+
+  componentDidMount = () => {
+    this.props.listDB();
+    this.props.userDB();
+  }
+  
   render() {
     return (
       <main>
@@ -144,4 +154,13 @@ export default class Main extends Component {
       </main>
     )
   }
+}
+
+
+const mapStateToProps = ({ list_db, user_db }) => {
+  return { list_db, user_db }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators( { listDB, userDB } , dispatch );
 }

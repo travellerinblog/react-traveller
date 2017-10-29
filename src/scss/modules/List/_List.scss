@@ -1,0 +1,89 @@
+@import '../../partials';
+
+.list{
+  box-sizing: border-box;
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .list-item-image {
+    width: 100%;
+  }
+  @include mobile{
+    padding: 0 10px;
+    .list-title{
+      margin-top: 40px;
+      font-size: 20px;
+    }
+    .list-search-sort-box{
+      margin-top: 24px;
+      background: pink;
+      .list-search-input{
+        width: 100%;
+        height: 35px;
+      }
+      .list-sort-box{
+        .list-selected-item{
+          width: 100%;
+          height: 34px;
+        }
+      }
+    }
+    .list-items{
+      margin-top: 40px;
+    }
+    background: yellow;
+  }
+  @include tablet {
+    padding: 0 15px;
+    .list-title{
+      margin-top: 50px;
+      font-size: 20px; 
+    }
+    .list-search-sort-box{
+      margin-top: 32px;
+      background: yellow;
+      .list-search-box {
+        width: 345px;
+        .list-search-input{
+          width: 345px;
+        }
+      }
+      .list-sort-box {
+        .list-selected-item{
+          width: 105px;
+          height: 36px;
+        }
+      }
+    }
+    .list-items{
+    }
+    background: blue;
+  }
+
+
+  @include desktop {
+    padding: 0 20px;
+    .list-title{
+      margin-top: 117px;
+      font-size: 42px; 
+    }
+    .list-search-sort-box{
+      margin-top: 64px;
+      background: blue;
+      .list-search-input{
+        width: 567px;
+      }
+      .list-sort-box{
+        float: right;
+        .list-selected-item{
+          
+        }
+      }
+    }
+    .list-items{
+      margin-top: 48px;
+    }
+    background: pink;
+  }
+}

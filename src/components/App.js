@@ -1,45 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as actions from '../actions';
-import * as firebase from "firebase";
-import {connect} from 'react-redux';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-// import { BrowserRouter as Router, Link, Match, Miss } from 'react-router-dom';
 
-import Main from './Main/';
-import List from './List/List';
-
-// firebase 관련 설정
-const config = {
-	apiKey: "AIzaSyBZeqdOpwcLz0WlvJPLzu0L6qGrzl0UhHY",
-	authDomain: "traveler-in-blog.firebaseapp.com",
-	databaseURL: "https://traveler-in-blog.firebaseio.com",
-	projectId: "traveler-in-blog",
-	storageBucket: "traveler-in-blog.appspot.com",
-	messagingSenderId: "448524690938"
-};
-firebase.initializeApp(config);
-
-//firebase DB 
-const DB = firebase.database().ref();
+// 컴포넌트
+import ListContainer from '../containers/ListContainer';
+import ReadContainer from '../containers/ReadContainer';
+import Editor from './Editor';
+import Main from './Main/index';
 
 class App extends Component {
 	constructor(props) {
  	 super(props);
 	}
-	
-	componentWillMount() {
-		// state에 DB값 넣기.
-		DB.on('value', snapshot => {
-			this.props.fetchDB(snapshot.val());
-		})
-	}
 
 	render() {
 		return (
-			<div>
-				<Main />
-			</div>
+			<Router>
+				<div>
+					<Switch>
+						<Route exact path="/" component={Main} />
+						{/* <Route path="/List" component={ListContainer} />
+						<Route path="/Read/:key" component={ReadContainer} />
+						<Route path="/Editor/:userid" component={Editor} /> */}
+					</Switch>
+					{/* <Editor /> */}
+				</div>
+			</Router>
 		);
 	}
 }
@@ -50,4 +37,4 @@ App.propTypes = {
 App.defaultProps = {
 }
 
-export default connect(null, actions)(App);
+export default App;
