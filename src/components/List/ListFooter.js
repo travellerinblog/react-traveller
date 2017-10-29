@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Route, Link } from 'react-router-dom';
+
+
 const propTypes = {
 };
 const defaultProps = {
@@ -9,7 +12,9 @@ const user_id = 'user1';
 // 로그인으로 연결하는 값
 const list_footer_goto_sign = (<a href=''> 시작하기 </a>)
 // 글쓰기로 연결하는 값
-const list_footer_goto_write = (<a href=''> 글쓰러가기 </a>)
+const list_footer_goto_write = (
+    <Link to="/Editor/userid"> 글쓰러가기 </Link>
+)
 // 출력해주는 값
 const list_footer_render = user_id ? list_footer_goto_write : list_footer_goto_sign;
 class ListFooter extends Component {
@@ -27,10 +32,6 @@ class ListFooter extends Component {
 }
 
 
-// .goto-write
-// h2.write-title 
-// button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
-// router-link.write-link(:to="{name: 'Write', query: {id: userUid}}" v-if="userStatus === 'in'") 여행 일지 쓰기
 ListFooter.propTypes = propTypes;
 ListFooter.defaultProps = defaultProps;
 export default ListFooter;

@@ -1,0 +1,18 @@
+@import './partials/normalize';
+@import './partials/reset';
+@import './partials/fonts';
+@import './partials/mixin';
+@import './partials/base';
+@import './partials/color';
+
+#App {
+  font-family: 'Nanum Square', 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: $color-b;
+}
+
+.a11y-hidden {
+  @extend %readable-hidden;
+}

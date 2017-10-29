@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import List from './List/List';
 import * as actions from '../actions';
 import * as firebase from "firebase";
 import {connect} from 'react-redux';
+import update from 'react-addons-update';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
+
+// 컴포넌트
+import ListContainer from '../containers/ListContainer';
+import ReadContainer from '../containers/ReadContainer';
 import Editor from './Editor';
 
 // firebase 관련 설정
@@ -23,20 +28,40 @@ const DB = firebase.database().ref();
 
 class App extends Component {
 	constructor(props) {
- 	 super(props);
+		super(props);
   }
-	componentWillMount() {
-		// state에 DB값 넣기.
+	componentDidMount() {
+		// DB에서 받은 값을 배열로 변환하여 전달.
 		DB.on('value', snapshot => {
-			this.props.fetchDB(snapshot.val());
+			const snap = snapshot.val();
+			const lists = Object.keys(snap.lists).map(key => {
+				const list_item = snap.lists[key];
+				// Obejct.keys로 객체를 순환하면 key값이 배열에 들어가지 않기 떄문에, key값을 추가
+				list_item.key = key;
+				return list_item
+			})
+			const users = Object.keys(snap.users).map(key => snap.users[key]);
+			const DB_data = {
+				lists,
+				users
+			}
+			this.props.fetchDB(DB_data);
 		})
-}
+	}
+
 	render() {
 		return (
-			<div>
-				<List/>
-				<Editor />
-			</div>
+			<Router>
+				<div>
+					<Switch>
+						<Route exact path="/" component={ListContainer} />
+						<Route path="/List" component={ListContainer} />
+						<Route path="/Read/:key" component={ReadContainer} />
+						<Route path="/Editor/:userid" component={Editor} />
+					</Switch>
+					{/* <Editor /> */}
+				</div>
+			</Router>
 		);
 	}
 }

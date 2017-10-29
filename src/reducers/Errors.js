@@ -2,16 +2,16 @@ import * as actions from '../actions/ActionTypes';
 import update from 'react-addons-update';
 
 const initial_state = {
-  DB_lists: [],
-  DB_users: []
+  'error_type': "",
+  'message': ""
 }
 
 export default function(state = initial_state, action) {
   switch (action.type) {
-    case actions.FETCH_DB:
+    case actions.THROW_SEARCH_ERROR_MESSAGE:
       return update(state, {
-        DB_lists: {$set: action.data.lists},
-        DB_users: {$set: action.data.users}
+        'error_type': {$set: action.error_type},
+        'message': {$set: action.message}
       })
     default:
       return state;

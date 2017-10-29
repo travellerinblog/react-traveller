@@ -1,58 +1,68 @@
 import React, { Component } from 'react';
+import * as actions from '../../actions';
 import PropTypes from 'prop-types';
-const propTypes = {
-};
-const defaultProps = {
-};
-// props 로 받아 올 값, list item의 개수 
-const list_items_amount = 13; 
-// page를 표시해야하는 수 (아이템수/한페이지에 표시되는수);
-const list_pages_amount = Math.ceil(list_items_amount/12);
-/**
- * 표시해야할 페이지 수 <li> 요소를 생성
- * @type {function}
- * @param {number} i - 페이지 수 
- * @property {array} list_pages - 출력해줄 페이지 숫자 (1, 2, ...) 
- * 
- */
-const listMakePagesArray = (i = list_pages_amount) => {
-  let list_pages = [];
-  do { 
-    list_pages.unshift(i);
-  } while(--i) 
-  return (
-    // 배열의 값들을 <li>요소 안에 넣어준다. 
-    list_pages.map((item, index) => {
-      return (
-        <li className="list-page-num" key={index}>
-          <a href=""> { item } </a>
-        </li>
-      )
-    })
-  )
-}
-// 생성한 <li>요소를 변수에 담아준다.
-// 즉시 실행함수로 담을 수 있나?
-const list_pages_render = listMakePagesArray();
+import { connect } from 'react-redux';
 class ListPages extends Component {
     constructor(props) {
         super(props);
+        this.settingPage = this.settingPage.bind(this);
+    }
+    /**
+     * List Pages 컴포넌트에서 보여줄 요소들을 정의한다.
+     * @property {array} list_pages - 페이지 값들이 들어갈 배열 [1, 2, 3 ...]
+     * @property {number} list_pages_amount - 출력해야할 페이지 수
+     * @returns - 화면에 출력할 <li>요소
+     * @memberof ListPages
+     */
+    settingPage () {
+      const list_pages = [];
+      let list_pages_amount = this.props.list_state.page_amount;
+      // 페이지 수 만큼 배열에 숫자를 담아준다.
+      if(!!list_pages_amount) {
+            do { 
+            list_pages.unshift(list_pages_amount);
+          } while(--list_pages_amount)  
+        }
+      // <li>요소를 만든다. 
+      return list_pages.map((item, index) => {
+        return (
+          <li className="list-page-num" key={index}>
+            <button onClick={() => { this.props.listPageIndexing(index)} } index={index}> { item } </button>
+          </li>
+        )});
     }
     render() {
-        return(
-            <div className="list-pages">
-              <a className="list-pages-first" href=""> 처음 </a>
-              <a className="list-pages-last" href=""> 마지막 </a>
+      // settingPage에서 만들어둔 요소를 가져와서 화면에 렌더.
+      const list_pages_render = this.settingPage();
+      // 아직 데이터를 가져오기 전이라면 아무것도 출력하지 않는다.
+        return this.props.list_state.type===""? '' : (
+          <div className="list-pages">
+            <button className="list-pages-first" onClick={() => { this.props.listPageIndexing(0)} }> 처음 </button>
+            <button className="list-pages-prev" onClick={() => { 
+              const index = this.props.list_state.page_index === 0 ? 0 : this.props.list_state.page_index -1 ;
+              this.props.listPageIndexing(index);
+            }}> 이전 </button>
               <ul className="list-pages">
-                {list_pages_render}
+                { list_pages_render }
               </ul>
-              <a className="list-pages-prev" href=""> 이전 </a>
-              <a className="list-pages-next" href=""> 다음 </a>
-            </div>
+            <button className="list-pages-next"onClick={() => { 
+              const index = this.props.list_state.page_index === this.props.list_state.page_amount-1 ? this.props.list_state.page_amount-1 : this.props.list_state.page_index + 1 ;
+              this.props.listPageIndexing(index);
+            }}> 다음 </button>
+            <button className="list-pages-last" onClick={() => { this.props.listPageIndexing(this.props.list_state.page_amount-1)} } > 마지막 </button>
+        </div>
         );
     }
 }
+const propTypes = {
+  list_state: PropTypes.object,
+  listPageIndexing: PropTypes.func
+}
 
-ListPages.propTypes = propTypes;
-ListPages.defaultProps = defaultProps;
-export default ListPages;
+const defaultProps = {
+  list_state: {},
+  listPageIndexing: () => console.warn('handleListPageIndex is not defined')
+}
+
+export default connect(undefined, actions)(ListPages);
+
