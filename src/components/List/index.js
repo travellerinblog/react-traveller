@@ -43,6 +43,7 @@ class List extends Component {
         return true; 
     }
     componentDidMount() {
+        this.props.listDB();
         // DB값 가져오기(수정필요: setTimeout)
         console.log('list index cdm: ', this.props)
         setTimeout(this.listCheckSortType, 2000);

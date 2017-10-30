@@ -119,9 +119,9 @@ export default class Carousel extends Component {
 
 
   componentDidMount = () => {
-
+    this._component_setResizeCarouselViews();
     if( !this.state.init_flag ) {
-      this._component_setResizeCarouselViews();
+      
       this.setState({
         init_flag: !this.state.init_flag
       })
@@ -170,14 +170,13 @@ export default class Carousel extends Component {
       }
     }
   */
-  _component_getCarouselItems = () => {
-    let info = this.props.carousel_item_info;
-
+  _component_getCarouselItems = (info) => {
+    console.log('Carousel info: ', info)
     if( !info ) {
       return '데이터가 없습니다.';
     }
 
-    return this.props.carousel_item_info.map((data, index) => {
+    return info.map((data, index) => {
       return (
         <li key={index}>
           <a>
@@ -271,7 +270,7 @@ export default class Carousel extends Component {
           onMouseMove={ (e) => { e.stopPropagation(); this._onMouseMove(e) } }
         >
           <ul>
-            {this._component_getCarouselItems()}
+            {this._component_getCarouselItems(this.props.carousel_item_info)}
           </ul>
         </div>
         <button 

@@ -3,7 +3,7 @@ import * as types from './ActionTypes';
 
 export function listDB() {
   
-  const request = axios.get('https://traveller-in-blog.firebaseio.com/lists.json');
+  const request = axios.get('https://traveler-in-blog.firebaseio.com/lists.json');
   return {
     type: types.LIST_DB,
     payload: request
@@ -11,7 +11,7 @@ export function listDB() {
 }
 export function userDB() {
   
-  const request = axios.get('https://traveller-in-blog.firebaseio.com/users.json');
+  const request = axios.get('https://traveler-in-blog.firebaseio.com/users.json');
   return {
     type: types.USER_DB,
     payload: request

@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Carousel from '../Carousel/';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { listDB, userDB } from '../../actions/';
+import { Route, Link } from 'react-router-dom';
+
+// import Carousel from '../Carousel/';
+import Carousel from '../Carousel/Carousel';
+import MainContent from './Main_content';
+import Loading from './Loading';
+
 
 
 class Main extends Component {
@@ -89,17 +94,54 @@ class Main extends Component {
             view_count: 11
           }
         },
-      ]
+      ],
+      lists: null
     }
-  }
 
-  componentDidMount = () => {
     this.props.listDB();
     this.props.userDB();
   }
   
+  
+  getContentInfo = (class_name, title) => {
+    return {
+      class_name,
+      title
+    }
+  }
+
+  getWhereCarouselInfo = () => {
+
+    return this.props.list_db.map((data, index) => {
+
+      const src = data.title_img;
+      const title = data.title;
+      const time = data.write_date;
+      const name = data.name;
+      const tag = data.tag;
+      const country = data.location.country.join(' ');
+      const view_count = data.view;
+      const key = data.key;
+      return {
+        src,
+        title,
+        time,
+        name,
+        tag,
+        country,
+        view_count,
+        key
+      }
+    });
+  }
+
   render() {
-    
+    console.log(this.props.list_db);
+    if( JSON.stringify(this.props.list_db) === '{}' ) {
+      return (
+        <Loading />
+      );
+    }
     return (
       <main>
         <div className="visual-container">
@@ -124,9 +166,11 @@ class Main extends Component {
             <div>
               <h3 className="title">어디로 갈래?</h3>
               {/* NavLink */}
-              <a href="#">더보기</a>
+              <Link to="/List">더보기</Link>
             </div>
-            <Carousel carousel_item_info={this.state.carousel_item_info}/>
+            <Carousel carousel_info={this.getWhereCarouselInfo()}/>
+            {/* <Carousel carousel_item_info={this.state.carousel_item_info}/> */}
+
           </section>
           <section className="bloglist">
             <div>
@@ -134,7 +178,6 @@ class Main extends Component {
               {/* NavLink */}
               <a href="#">더보기</a>
             </div>
-            <Carousel carousel_item_info={this.state.carousel_item_info}/>
           </section>
           <section className="recommend">
             <h3>우리가 강추한다</h3>
