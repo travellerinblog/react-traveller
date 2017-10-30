@@ -34,11 +34,11 @@ class List extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) { 
         // 스토어의 페이지 인덱스와 스테이트의 인덱스를 동일하게 해줌.
-        if (nextProps.sorted_list.page_index !== this.state.page_index) {
+        if ((this.props.app_lists).length !== 0 && nextProps.sorted_list.page_index !== this.state.page_index) {
             this.setState(nextProps.sorted_list);
         } 
         // DB 갱신된 경우, 변경된 DB로 정렬 후 state를 변경한다.
-        if (nextProps.app_lists!==this.props.app_lists) {
+        if ((this.props.app_lists).length !== 0 && nextProps.app_lists!==this.props.app_lists) {
             this.listCheckSortType(nextProps.app_lists);
         }
         return true; 
@@ -50,7 +50,7 @@ class List extends Component {
             setTimeout(this.listCheckSortType, 2000);
         
         } else {
-            setTimeout(this.listCheckSortType, 2000);
+            this.listCheckSortType();
         }
         
         // google 초기화 
@@ -61,7 +61,6 @@ class List extends Component {
 
         // 포커스 나갔을 때 이벤트
         document.addEventListener('mousedown', this.handleClickOutside);
-        
     }
     // google 초기화 
     initGoogle() {
