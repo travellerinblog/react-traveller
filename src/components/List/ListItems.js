@@ -18,14 +18,14 @@ const ListItems = ({list_state}) => {
   // 아직 데이터를 가지고 오고 있는 중 
   if(list_state.type==="") {
     list_items_render.push(
-      <li className="list-item-loading" key="loading data">
+      <li className="list-item-loading list-item-message" key="loading data">
       잠시만 기다려주세요.
     </li>
     )
   } else if (list_state.list.length === 0 ) {
     // 데이터를 가져왔는데 list가 비어있는 경우.
     list_items_render.push(
-      <li className="list-item-nothing" key="no data">
+      <li className="list-item-nothing list-item-message" key="no data">
         찾으시는 지역에 대한 정보가 없습니다.
     </li>
     )
@@ -34,18 +34,17 @@ const ListItems = ({list_state}) => {
     for(let i = page_start; i <= page_end; i++ ){
       // 만약에 i의 값이 list의 총 길이보다 크다면 loop 종료.
       if (i > list_state.list.length - 1) break;
-      
       const date = list_state.list[i].write_date
       let link_path = '/Read/' + list_state.list[i].key;
       let date_convert = date.slice(0,4) + "." + date.slice(4,6) + "." + date.slice(6,8)
       list_items_render.push(
-      <li className='list-item' key={list_state.list[i].key}>
+      <li className='list-item-box' key={list_state.list[i].key}>
         <Link to={link_path}>
-          <figure>
+          <figure className="list-item">
               <img className="list-item-image" src ={list_state.list[i].title_img} alt={list_state.list[i].title} />
               <figcaption className='list-item-contents'>
                 <h2 className="list-item-title">{list_state.list[i].title}</h2>
-                <p className="list-item-content">{list_state.list[i].write_date} |{list_state.list[i].location.country} | {list_state.list[i].name} | 조회수 {list_state.list[i].view} </p>
+                <p className="list-item-content">{date_convert} | {list_state.list[i].location.country} | {list_state.list[i].name} | 조회수 {list_state.list[i].view} </p>
               </figcaption>
           </figure>
         </Link>

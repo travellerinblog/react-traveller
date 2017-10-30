@@ -27,7 +27,7 @@ class ListPages extends Component {
       return list_pages.map((item, index) => {
         return (
           <li className="list-page-num" key={index}>
-            <button onClick={() => { this.props.listPageIndexing(index)} } index={index}> { item } </button>
+            <button className="list-page-btn" onClick={() => { this.props.listPageIndexing(index)} } index={index}> { item } </button>
           </li>
         )});
     }
@@ -36,20 +36,20 @@ class ListPages extends Component {
       const list_pages_render = this.settingPage();
       // 아직 데이터를 가져오기 전이라면 아무것도 출력하지 않는다.
         return this.props.list_state.type===""? '' : (
-          <div className="list-pages">
-            <button className="list-pages-first" onClick={() => { this.props.listPageIndexing(0)} }> 처음 </button>
-            <button className="list-pages-prev" onClick={() => { 
+          <div className="list-pages-box">
+            <button className="list-pages-first list-page-btn" onClick={() => { this.props.listPageIndexing(0)} }> &lt;&lt; </button>
+            <button className="list-pages-prev list-page-btn" onClick={() => { 
               const index = this.props.list_state.page_index === 0 ? 0 : this.props.list_state.page_index -1 ;
               this.props.listPageIndexing(index);
-            }}> 이전 </button>
+            }}> &lt; </button>
               <ul className="list-pages">
                 { list_pages_render }
               </ul>
-            <button className="list-pages-next"onClick={() => { 
+            <button className="list-pages-next list-page-btn"onClick={() => { 
               const index = this.props.list_state.page_index === this.props.list_state.page_amount-1 ? this.props.list_state.page_amount-1 : this.props.list_state.page_index + 1 ;
               this.props.listPageIndexing(index);
-            }}> 다음 </button>
-            <button className="list-pages-last" onClick={() => { this.props.listPageIndexing(this.props.list_state.page_amount-1)} } > 마지막 </button>
+            }}> &gt; </button>
+            <button className="list-pages-last list-page-btn" onClick={() => { this.props.listPageIndexing(this.props.list_state.page_amount-1)} } > &gt;&gt; </button>
         </div>
         );
     }

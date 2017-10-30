@@ -5,7 +5,7 @@ const ListSort = ({onListSortByLastest, onListSortByPopular}) => {
     return (
       <ul className="list-sort-selector">
         <li className="list-sort-latest"><button className="list-sort-btn" type="button" onClick={() => {onListSortByLastest()}}>최신순</button></li>
-        <li classNamge="list-sort-popular"><button className="list-sort-btn" type="button" onClick={() => {onListSortByPopular()}}>인기순</button></li>
+        <li className="list-sort-popular"><button className="list-sort-btn" type="button" onClick={() => {onListSortByPopular()}}>인기순</button></li>
       </ul>
     );
 }

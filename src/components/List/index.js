@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as actions from '../../actions';
+
 import { connect } from 'react-redux';
 import update from 'react-addons-update';
 
@@ -43,9 +44,14 @@ class List extends Component {
         return true; 
     }
     componentDidMount() {
-        // DB값 가져오기(수정필요: setTimeout)
-        console.log('list index cdm: ', this.props)
-        setTimeout(this.listCheckSortType, 2000);
+        // 메인을 통해서 List로 들어오지 않은경우(새로고침, 주소직접입력 등) DB를 가져온다.
+        if(Object.keys(this.props.app_lists).length === 0) {
+            this.props.handleGetDB()
+            setTimeout(this.listCheckSortType, 2000);
+        
+        } else {
+            setTimeout(this.listCheckSortType, 2000);
+        }
         
         // google 초기화 
         this.initGoogle();
@@ -90,7 +96,7 @@ class List extends Component {
 
         // 사용자가 지역을 선택하지 않은 경우. 에러 표시
         if(!get_place.address_components) { 
-            this.props.throwSearchErrorMessage('search','지역을 선택해 주세요.'); 
+            this.props.throwSearchErrorMessage('search','※ 지역을 선택해 주세요.'); 
             return; 
         } 
         // 사용자가 지역을 선택하지 않은 경우 에러 메세지 삭제
@@ -129,7 +135,6 @@ class List extends Component {
     listCheckSortType(nextProps) {
         const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
         const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
-        console.log('list index app_lists: ', app_lists);
         const list_sort_type = sorted_list && sorted_list.type !== "" ? sorted_list.type : "" ;
         let after_dispatch_list = {}
         let lists = [];
@@ -220,19 +225,21 @@ class List extends Component {
                 }}/> : '';
         const list_selected_sort_item = this.props.sorted_list.type === "LIST_SORT_BY_POPULAR" ? "인기순" : "최신순";
         return(
+        <div className = "list-container">
           <div className="list">
             <h1 className="list-title">당신의 다음 목적지는 어디인가요?</h1>
             <div className="list-search-sort-box">
                 <ListSearch/>
                 <div className="list-sort-box" ref={this.setSortSelectorRef}>
-                    <button className="list-selected-item" type="button" onClick={this.llistSelectorOnClick}>{list_selected_sort_item}</button>
+                    <button className="list-selected-item list-sort-btn" type="button" onClick={this.llistSelectorOnClick}>{list_selected_sort_item}</button>
                     {list_sort_selector_render}
                 </div>
             </div>
             <ListItems list_state={this.state}/>
             <ListPages list_state={this.state}/>
-            <ListFooter/>
           </div>
+          <ListFooter/>
+        </div>
         );
     }
 }
