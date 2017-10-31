@@ -61,6 +61,7 @@ class List extends Component {
 
         // 포커스 나갔을 때 이벤트
         document.addEventListener('mousedown', this.handleClickOutside);
+
     }
     // google 초기화 
     initGoogle() {

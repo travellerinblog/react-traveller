@@ -95,7 +95,11 @@
         margin-right: 5px;
         padding: 0;
       }
-      .list-pages, .list-page-num{
+      .list-page-btn.active-page{
+        border: 1px solid $color-m;
+        color: $color-m-darker;
+      }
+      .list-pages, .list-page-num, .list-pages-prev-btns, .list-pages-next-btns{
         border: none;
       }
     }
