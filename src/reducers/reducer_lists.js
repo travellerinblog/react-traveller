@@ -11,6 +11,7 @@ function dataProcessing(data) {
 export default function (state = {}, action) {
   switch (action.type) {
     case LIST_DB:
+      console.log('reducer List_DB', action.payload.data);
       return dataProcessing(action.payload.data);
     default:
       return state;

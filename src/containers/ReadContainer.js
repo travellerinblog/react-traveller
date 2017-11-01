@@ -6,15 +6,15 @@ import Read from '../components/Read';
 
 const mapStateToProps = (state) => {
   return {
-      app_lists: state.list_db
+      app_lists: state.list_db,
+      errors: state.Errors
   }
 }
-
 const mapDispatchToProps = (dispatch) => ({
-  handleGetDB : () => {
+  handleGetListDB : () => {
     dispatch(actions.listDB())
-    dispatch(actions.userDB())
-  }
+  },
+  throwErrorMessage: (error_type, message) => dispatch(actions.throwErrorMessage(error_type, message))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Read);

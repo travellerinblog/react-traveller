@@ -93,14 +93,11 @@ class Main extends Component {
       ]
     }
   }
-
   componentDidMount = () => {
     this.props.listDB();
     this.props.userDB();
   }
-  
   render() {
-    
     return (
       <main>
         <div className="visual-container">
@@ -125,7 +122,7 @@ class Main extends Component {
             <div>
               <h3 className="title">어디로 갈래?</h3>
               {/* NavLink */}
-              <Link to="/List">더보기</Link>
+              <Link to="/List/All">더보기</Link>
             </div>
             <Carousel carousel_item_info={this.state.carousel_item_info}/>
           </section>
@@ -133,7 +130,7 @@ class Main extends Component {
             <div>
               <h3 className="title">나 여기 왔다 갔다!</h3>
               {/* NavLink */}
-              <Link to="/List">더보기</Link>
+              <Link to="/List/All">더보기</Link>
             </div>
             <Carousel carousel_item_info={this.state.carousel_item_info}/>
           </section>

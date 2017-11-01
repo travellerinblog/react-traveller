@@ -62,6 +62,9 @@ class List extends Component {
         // 포커스 나갔을 때 이벤트
         document.addEventListener('mousedown', this.handleClickOutside);
 
+        // 라우터 ... path값과 쿼리에 따라서 list item이 달라져야 한다능.... OMG
+        // console.log(this.props.location);
+
     }
     // google 초기화 
     initGoogle() {
@@ -96,11 +99,11 @@ class List extends Component {
 
         // 사용자가 지역을 선택하지 않은 경우. 에러 표시
         if(!get_place.address_components) { 
-            this.props.throwSearchErrorMessage('search','※ 지역을 선택해 주세요.'); 
+            this.props.throwErrorMessage('search','※ 지역을 선택해 주세요.'); 
             return; 
         } 
         // 사용자가 지역을 선택하지 않은 경우 에러 메세지 삭제
-        this.props.throwSearchErrorMessage('',''); 
+        this.props.throwErrorMessage('',''); 
 
         const place_type = compare_address_type.indexOf(get_place.types[0]); 
  
@@ -133,6 +136,7 @@ class List extends Component {
      * @memberof List
     * */
     listCheckSortType(nextProps) {
+        
         const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
         const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
         const list_sort_type = sorted_list && sorted_list.type !== "" ? sorted_list.type : "" ;
@@ -235,7 +239,7 @@ class List extends Component {
                     {list_sort_selector_render}
                 </div>
             </div>
-            <ListItems list_state={this.state}/>
+            <ListItems list_state={this.state} getDB={this.props.handleGetDB}/>
             <ListPages list_state={this.state}/>
           </div>
           <ListFooter/>
@@ -250,7 +254,7 @@ const propTypes = {
     handleListSortByLastest: PropTypes.func,
     handleListSortByPopular: PropTypes.func,
     handleListLocationSearch: PropTypes.func,
-    throwSearchErrorMessage: PropTypes.func
+    throwErrorMessage: PropTypes.func
 };
 const defaultProps = {
     app_lists: {},
@@ -259,6 +263,6 @@ const defaultProps = {
     handleListSortByLastest:  () => console.warn('handleListSortByLastest is not defined'),
     handleListSortByPopular:  () => console.warn('handleListSortByPopular is not defined'),
     handleListLocationSearch: () =>  console.warn('handleListLocationSearch is not defined'),
-    throwSearchErrorMessage:  () => console.warn('throwSearchErrorMessage is not defined')
+    throwErrorMessage:  () => console.warn('throwErrorMessage is not defined')
 };
 export default List;

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Link } from 'react-router-dom';
+import axios from 'axios';
+
 
 /**
  * List Items 컴포넌트 : 화면에 보여줄 글을 정한다. 
@@ -10,11 +12,18 @@ import { Route, Link } from 'react-router-dom';
  * @property {number} page_end - 글 목록의 몇 번쨰 아이템까지 보여줄지 정해주는 값.
  * @property {array} list_items_render - 페이지에 표시할 아이템
  */
-const ListItems = ({list_state}) => {
+const ListItems = ({list_state, getDB}) => {
   const page_index = list_state.page_index;
   const page_start = page_index * 12;
   const page_end = ((page_index + 1) * 12) - 1;
   let list_items_render = [];
+  const viewCountUpdate = (key) => {
+    const read_item = list_state.list.filter(list => {
+      return key === list.key
+    }).pop();
+    const URL = 'https://traveler-in-blog.firebaseio.com/lists/' + key + '.json'
+    axios.patch(URL, {'view': read_item.view + 1}).then(() => getDB());
+  }
   // 아직 데이터를 가지고 오고 있는 중 
   if(list_state.type==="") {
     list_items_render.push(
@@ -35,11 +44,10 @@ const ListItems = ({list_state}) => {
       // 만약에 i의 값이 list의 총 길이보다 크다면 loop 종료.
       if (i > list_state.list.length - 1) break;
       const date = list_state.list[i].write_date
-      let link_path = '/Read/' + list_state.list[i].key;
       let date_convert = date.slice(0,4) + "." + date.slice(4,6) + "." + date.slice(6,8)
       list_items_render.push(
       <li className='list-item-box' key={list_state.list[i].key}>
-        <Link to={link_path}>
+        <Link to={'/Read/' + list_state.list[i].key} onClick={() => viewCountUpdate(list_state.list[i].key)}>
           <figure className="list-item">
               <img className="list-item-image" src ={list_state.list[i].title_img} alt={list_state.list[i].title} />
               <figcaption className='list-item-contents'>
@@ -60,11 +68,13 @@ const ListItems = ({list_state}) => {
   );
 }
 const propTypes = {
-  list_state: PropTypes.object
+  list_state: PropTypes.object,
+  getDB: PropTypes.func
 }
 
 const defaultProps = {
-  list_state: {}
+  list_state: {},
+  getDB: () => {console.warn('getDB is not defined')}
 }
 
 export default ListItems;

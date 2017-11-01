@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
         return;
     },
     handleListPageIndexing: () => dispatch(actions.listPageIndexing(index)),
-    throwSearchErrorMessage: (error_type, message) => dispatch(actions.throwSearchErrorMessage(error_type, message))
+    throwErrorMessage: (error_type, message) => dispatch(actions.throwErrorMessage(error_type, message))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

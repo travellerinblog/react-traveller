@@ -20,7 +20,7 @@ class App extends Component {
 				<div>
 					<Switch>
 						<Route exact path="/" component={Main} />
-						<Route path="/List" component={ListContainer} />
+						<Route path="/List/:type" serach="filter" component={ListContainer} />
 						<Route path="/Read/:key" component={ReadContainer} />
 						<Route path="/Editor/:userid" component={Editor} />
 					</Switch>
