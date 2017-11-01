@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Route, Link } from 'react-router-dom';
 
 import $ from '../../../node_modules/jquery/dist/jquery.min';
 
@@ -25,23 +26,35 @@ export default class Carousel extends Component {
       // data: src, title, time, name, view_count, country
       const alt = data.tag.join(' ');
       const time = data.time;
-      if (index > 10) {
+      let pathname = '';
+      let param = '';
+      if( data.what === 'where' ) {
+        param = data.country;
+        pathname = '/List/';
+      } else if ( data.what === 'bloglist' ) {
+        param = data.key;
+        pathname = '/Read/';
+      }
+
+      if ( index > 10 ) {
         return '';
       }
       return (
         <li key={data.title}>
-          <figure>
-            <div className="carousel-img-box">
-              <img src={data.src} alt={alt} />
-            </div>
-            <Figcaption 
-              title={data.title} 
-              time={data.time} 
-              name={data.name}  
-              view_count={data.view_count}
-              country={data.country}
-            />
-          </figure>
+          <Link to={{pathname, param}}>
+            <figure>
+              <div className="carousel-img-box">
+                <img src={data.src} alt={alt} />
+              </div>
+              <Figcaption 
+                title={data.title} 
+                time={data.time} 
+                name={data.name}  
+                view_count={data.view_count}
+                country={data.country}
+              />
+            </figure>
+          </Link>
         </li>
       );
     });
