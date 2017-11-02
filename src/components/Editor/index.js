@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import EditorHeader from './EditorHeader';
+import EditorContent from './EditorContent';
 
 export default class Editor extends Component {
   // static propTypes = {
@@ -20,6 +21,7 @@ export default class Editor extends Component {
             글쓰기
             드래그 했을 때 editor tools 보이게 하기 
         */}
+        <EditorContent />
       </div>
     )
   }
