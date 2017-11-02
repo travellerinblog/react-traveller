@@ -20,6 +20,16 @@ class Read extends Component {
         this.state = {};
         this.getReadItem = this.getReadItem.bind(this);
     }
+    shouldComponentUpdate(nextProps) {
+        // 댓글이 변경된 경우 state 값에 반영해준다. nextProps의 값으로 check. 
+        const read_item = nextProps.app_lists.filter(list => {
+            return this.props.match.params.key === list.key
+        }).pop();
+        if (Object.keys(this.state).length !== 0 && read_item.reply !== this.state.reply ) {
+            this.setState(read_item)
+        }
+        return true;
+    }
     componentDidMount() {
         if(Object.keys(this.props.app_lists).length === 0) {
             this.props.handleGetListDB();
@@ -30,7 +40,7 @@ class Read extends Component {
         }
     }
     getReadItem() {
-        const read_item = this.props.app_lists && this.props.app_lists.filter(list => {
+        const read_item = this.props.app_lists.filter(list => {
             return this.props.match.params.key === list.key
         }).pop();
         this.setState(read_item)

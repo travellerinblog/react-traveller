@@ -13,6 +13,7 @@ class ReadReply extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            'reply_content': {},
             'reply_editable': false,
             'reply_index': -1,
             'original_reply_text': ''
@@ -22,12 +23,18 @@ class ReadReply extends Component {
         this.replyEditEnterCheck = this.replyEditEnterCheck.bind(this);
         this.addReply = this.addReply.bind(this);
     }
-    // componentDidUpdate(prevProps, prevState) {
-    //     console.log(JSON.stringify(prevProps.app_lists) === JSON.stringify(this.props.app_lists))
-    //     console.log('prev', prevProps.app_lists)
-    //     console.log('this', this.props.app_lists);
-    // }
+    shouldComponentUpdate(nextProps) {
+        if(nextProps.item.reply !== this.state.reply_content) {
+            this.setState(update(this.state, {
+                'reply_content' : {$set: nextProps.item.reply}
+            }));
+        }
+        return true;
+    }
     componentDidMount() {
+        this.setState(update(this.state, {
+            'reply_content' : {$set: this.props.item.reply}
+        }));
         // document.addEventListener('keyup', this.replyEditEnterCheck);
     }
     /**
@@ -52,7 +59,18 @@ class ReadReply extends Component {
             reply_textarea.value = '';
         }
     }
-    
+
+    /**
+     * 댓글 삭제
+     * 
+     * @param {any} key 
+     * @memberof ReadReply
+     */
+    deleteReply(key) {
+        let URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '/reply/' + key + '.json'
+        axios.delete(URL).then(() => this.props.getDB());
+    }
+
     /**
      * 수정 버튼 눌렀을 때 저장/취소 버튼 표시
      * 
@@ -76,16 +94,7 @@ class ReadReply extends Component {
             }));
         }
     }
-    /**
-     * 댓글 삭제
-     * 
-     * @param {any} key 
-     * @memberof ReadReply
-     */
-    deleteReply(key) {
-        let URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '/reply/' + key + '.json'
-        axios.delete(URL).then(() => this.props.getDB());
-    }
+
     /**
      * 댓글 수정 저장.
      * 
@@ -108,6 +117,19 @@ class ReadReply extends Component {
         }
     }
     /**
+     * 댓글 수정하다가 취소
+     * 
+     * @param {any} index 
+     * @param {any} key 
+     * @memberof ReadReply
+     */
+    cancelEditReplyText (index, key) {
+        const el =  document.getElementsByClassName('read-reply-item')[index];
+        const reply_text = el.getElementsByClassName('read-reply-text')[0];
+        reply_text.innerHTML = this.state.original_reply_text;
+        this.toggleReplyEditBtns(-1);
+    }
+    /**
      * 댓글 수정에서 엔터를 누르면 저장.
      * 
      * @param {any} index 
@@ -122,7 +144,7 @@ class ReadReply extends Component {
         }
     }
     render() {
-        const item = this.props.item
+        const item = this.state.reply_content;
         // 이건 로그인한 사용자의 uid (수정필요: 로그인기능 구현하면 로그인한 사용자의 uid를 localstorage에서 받아와야한다.) 
         const user_id = "mthJGpS1Zva4GvhZVp5E1VdozM42";
         // 리플 공백인 상태에서 등록 눌렀을 경우의 에러 메세지 
@@ -140,19 +162,19 @@ class ReadReply extends Component {
                 { reply_submit_error_message}
             </div>
         );
-        const read_reply_list = !item.reply ? "" : (
-            Object.keys(item.reply).sort((a, b) => item.reply[b].date - item.reply[a].date ).map((key, index) => {
+        const read_reply_list = !item ? "" : (
+            Object.keys(item).sort((a, b) => item[b].date - item[a].date ).map((key, index) => {
                 // 날짜 표시 형식 변환
-                const convert_reply_date = item.reply[key].date.slice(0,4) + "." + item.reply[key].date.slice(4,6) + "." + item.reply[key].date.slice(6,8);
+                const convert_reply_date = item[key].date.slice(0,4) + "." + item[key].date.slice(4,6) + "." + item[key].date.slice(6,8);
                 //  저장 취소 버튼
-                const edit_btns = user_id === item.reply[key].user_uid && this.state.reply_editable && this.state.reply_index === index ? (
+                const edit_btns = user_id === item[key].user_uid && this.state.reply_editable && this.state.reply_index === index ? (
                     <div className="read-reply-edit-btns">
                         <button className="read-reply-edit-save" type="button" onClick={() => this.saveEditedReplyText(index, key)}>저장</button>
-                        <button className="read-reply-edit-cancel" onClick={this.toggleReplyEditBtns} type="button">취소</button> 
+                        <button className="read-reply-edit-cancel" onClick={() => this.cancelEditReplyText(index, key)} type="button">취소</button> 
                     </div>
                 ) : ""
                 // 수정 삭제 버튼 
-                const reply_btns = user_id === item.reply[key].user_uid && !this.state.reply_editable ? (
+                const reply_btns = user_id === item[key].user_uid && !this.state.reply_editable ? (
                     <div className="read-reply-item-btns">                         
                         <button className="read-reply-edit" onClick={() => this.toggleReplyEditBtns(index)} type="button">수정</button>
                         <button className="read-reply-delete" onClick={() => this.deleteReply(key)}type="button">삭제</button>
@@ -164,7 +186,7 @@ class ReadReply extends Component {
                 return (
                 <li className="read-reply-item" key={key}>
                     <div className="read-reply-item-title">
-                        <p className="read-reply-item-author"> {'by. '+item.reply[key].name} </p>
+                        <p className="read-reply-item-author"> {'by. '+item[key].name} </p>
                         <p className="read-reply-item-date"> {convert_reply_date} </p>
                         {/* 수정/삭제 버튼 */}
                         {reply_btns}
@@ -175,7 +197,7 @@ class ReadReply extends Component {
                         suppressContentEditableWarning="true" 
                         contentEditable={this.state.reply_index === index && this.state.reply_editable} 
                         onKeyUp={() => this.replyEditEnterCheck(index, key)}> 
-                        {item.reply[key].reply_text}
+                        {item[key].reply_text}
                     </p> 
                     {edit_error_message}
                     <hr/>
