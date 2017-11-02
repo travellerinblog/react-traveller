@@ -11,13 +11,13 @@ const defaultProps = {
 class ReadButtons extends Component {
     constructor(props) {
         super(props);
-        this.handleScrollToTop = this.handleScrollToTop.bind(this);
-        this.handleScrollToBottom = this.handleScrollToBottom.bind(this);
+        this._handleScrollToTop = this._handleScrollToTop.bind(this);
+        this._handleScrollToBottom = this._handleScrollToBottom.bind(this);
     }
-    handleScrollToTop() {
+    _handleScrollToTop() {
         document.getElementsByClassName('read-title-box')[0].scrollIntoView({'behavior':'smooth'});
     }
-    handleScrollToBottom() {
+    _handleScrollToBottom() {
         document.getElementsByClassName('read-link-buttons')[0].scrollIntoView({'behavior':'smooth'});
     }
     render() {
@@ -28,8 +28,8 @@ class ReadButtons extends Component {
                     <Link to="/Editor/userid"> 글쓰기 </Link>
                 </div>
                 <div className="read-scroll-buttons">
-                    <button className="scroll-btn scroll-top" type="button" onClick={this.handleScrollToTop}> 위로 </button>
-                    <button className="scroll-btn scroll-bottom" type="button" onClick={this.handleScrollToBottom}> 아래로 </button>
+                    <button className="scroll-btn scroll-top" type="button" onClick={this._handleScrollToTop}> 위로 </button>
+                    <button className="scroll-btn scroll-bottom" type="button" onClick={this._handleScrollToBottom}> 아래로 </button>
                 </div>
             </div>
         );

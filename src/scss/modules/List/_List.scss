@@ -73,6 +73,16 @@
             }
           }
         }
+        .list-item:hover{
+          margin-left: -2px;
+          margin-bottom: 2px;
+          box-shadow: 7px 7px 1px rgba($color-g, 0.1);
+          img {
+            -webkit-filter: brightness(1.5);
+            filter: brightness(1.5);
+          }
+        }
+
       }
       .list-item-message{
         text-align: center;
@@ -240,7 +250,7 @@
     }
     .list-items{
       //ul
-      text-align: center;
+      padding-left: 18px;
       .list-item-box{
         //li
         display: inline-block;
@@ -250,7 +260,6 @@
           //figure
           width: 100%;
           height: 260px;
-          text-align: left;
           .list-item-image{
             width: 200%;
             height: auto;
@@ -331,7 +340,7 @@
         }
         //ul
         margin-top: 48px;
-        text-align: center;
+        padding-left: 15px;
         .list-item-box{
           //li
           display: inline-block;

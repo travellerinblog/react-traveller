@@ -5,11 +5,17 @@ import { connect } from 'react-redux';
 class ListPages extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+        }
         this.settingPage = this.settingPage.bind(this);
     }
     componentDidMount() {
         // 화면 크기가 달라졌을 때 page 다르게하기 
         window.addEventListener('resize', this.settingPage);
+        // state에 현재 width 저장
+        this.setState({
+          'client_width': document.documentElement.clientWidth
+        })
     }
     /**
      * List Pages 컴포넌트에서 보여줄 요소들을 정의한다.
@@ -20,8 +26,8 @@ class ListPages extends Component {
      */
     settingPage () {
       const list_pages = [];
-      let list_pages_amount = this.props.page_amount;
       const client_width = document.documentElement.clientWidth;
+      let list_pages_amount = this.props.page_amount;
       // 페이지 수 만큼 배열에 숫자를 담아준다.
       if(!!list_pages_amount) {
             do { 
@@ -39,6 +45,11 @@ class ListPages extends Component {
       return list_page_all.filter((page, index) => {
         const active = this.props.active_index;
         if(client_width < 768) {
+          if(this.state.client_width > 768) {
+            this.setState({
+              'client_width': document.documentElement.clientWidth
+            })
+          } 
           if(active === 0) {
             return index < 3;
           } else if (active > this.props.page_amount -2) {
@@ -47,6 +58,11 @@ class ListPages extends Component {
             return index >= active -1 && index <= active + 1;
           }
         } else if (client_width >= 768 && client_width < 1200) {
+          if(this.state.client_width > 1200 || this.state.client_width < 768) {
+            this.setState({
+              'client_width': document.documentElement.clientWidth
+            })
+          } 
           if(active < 3) {
             return index < 5;
           } else if (active > (this.props.page_amount -4)) {
@@ -55,6 +71,11 @@ class ListPages extends Component {
             return index >= active -2 && index <= active + 2;
           }
         } else {
+          if(this.state.client_width < 1200) {
+            this.setState({
+              'client_width': document.documentElement.clientWidth
+            })
+          } 
           if(active < 4) {
             return index < 9;
           } else if (active > (this.props.page_amount -8)) {

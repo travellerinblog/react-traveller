@@ -16,12 +16,17 @@ class ReadReply extends Component {
             'reply_content': {},
             'reply_editable': false,
             'reply_index': -1,
+            'reply_key': '',
             'original_reply_text': ''
         }
-        this.toggleReplyEditBtns = this.toggleReplyEditBtns.bind(this);
-        this.saveEditedReplyText = this.saveEditedReplyText.bind(this);
-        this.replyEditEnterCheck = this.replyEditEnterCheck.bind(this);
-        this.addReply = this.addReply.bind(this);
+        this._toggleReplyEditBtns = this._toggleReplyEditBtns.bind(this);
+        this._saveEditedReplyText = this._saveEditedReplyText.bind(this);
+        this._replyEditEnterCheck = this._replyEditEnterCheck.bind(this);
+        this._cancelEditReplyText = this._cancelEditReplyText.bind(this);
+        this._deleteReply = this._deleteReply.bind(this);
+        this._addReply = this._addReply.bind(this);
+        this._makeDateFormat = this._makeDateFormat.bind(this);
+        this._resetState = this._resetState.bind(this);
     }
     shouldComponentUpdate(nextProps) {
         if(nextProps.item.reply !== this.state.reply_content) {
@@ -35,21 +40,26 @@ class ReadReply extends Component {
         this.setState(update(this.state, {
             'reply_content' : {$set: this.props.item.reply}
         }));
-        // document.addEventListener('keyup', this.replyEditEnterCheck);
+        document.addEventListener('keyup', this._replyEditEnterCheck);
     }
+    componentWillUnmount = () => {
+        document.removeEventListener('keyup', this._replyEditEnterCheck);
+      }
     /**
      * 댓글 추가
      */
-    addReply() {
-        const reply_textarea = document.getElementsByClassName('read-reply-textarea')[0];
+    _addReply(enter_check) {
+        const reply_textarea = document.getElementsByClassName('read-reply-textinput')[0];
         const reply_text = reply_textarea.value;
+        const reply_date = this._makeDateFormat();
         if (reply_text.trim() === '') {
             this.props.handleErrorMessage('reply-submit', '※내용을 입력해주세요.')
             return;
         } else {
             const URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '/reply.json'
+            // 회원 가입 기능 추가 후 수정 필요.
             const reply_data = {
-                'date' : '20171011150949',
+                'date' : reply_date,
                 'id' : "dasom1012@gmail.com",
                 'name': 'dasom',
                 'reply_text' : reply_text,
@@ -58,6 +68,33 @@ class ReadReply extends Component {
             axios.post(URL, reply_data).then(() => this.props.getDB());
             reply_textarea.value = '';
         }
+
+        // 댓글 수정 중에 등록을 누른 경우.
+        if (this.state.reply_editable === true) {
+            this._resetState();
+        }
+    }
+    /**
+     * state의 값들을 초기화 한다. 
+     * 
+     * @memberof ReadReply
+     */
+    _resetState() {
+        this.setState(update(this.state, {
+            'reply_editable' : {$set: !this.state.reply_editable},
+            'reply_index' : {$set: -1},
+            'reply_key' : {$set: ''},
+            'original_reply_text' : {$set: ''}
+        }));
+    }
+    _makeDateFormat() {
+        const times = new Date();
+        const month = (times.getMonth() + 1) < 10 ? '0' + (times.getMonth() + 1).toString() : (times.getMonth() + 1).toString();
+        const day = times.getDate() < 10 ? '0' + times.getDate() : times.getDate();
+        const hours = times.getHours() < 10 ? '0' + times.getHours() : times.getHours();
+        const minute = times.getMinutes() < 10 ? '0' + times.getMinutes() : times.getMinutes();
+        const second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds();
+        return times.getFullYear() + month + day + hours + minute + second;
     }
 
     /**
@@ -66,8 +103,8 @@ class ReadReply extends Component {
      * @param {any} key 
      * @memberof ReadReply
      */
-    deleteReply(key) {
-        let URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '/reply/' + key + '.json'
+    _deleteReply(key) {
+        const URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '/reply/' + key + '.json'
         axios.delete(URL).then(() => this.props.getDB());
     }
 
@@ -77,24 +114,27 @@ class ReadReply extends Component {
      * @param {any} index 
      * @memberof ReadReply
      */
-    toggleReplyEditBtns (index) {
+    _toggleReplyEditBtns (index, key) {
         if(!this.state.reply_editable) {
             const el =  document.getElementsByClassName('read-reply-item')[index];
             const reply_text = el.getElementsByClassName('read-reply-text')[0];
             this.setState(update(this.state, {
                 'reply_editable' : {$set: !this.state.reply_editable},
                 'reply_index' : {$set: index},
-                'original_reply_text' : {$set: reply_text.innerHTML}
+                'reply_key' : {$set: key},
+                'original_reply_text' : {$set: reply_text.innerText}
             }));
         } else {
             this.setState(update(this.state, {
                 'reply_editable' : {$set: !this.state.reply_editable},
                 'reply_index' : {$set: index},
+                'reply_key' : {$set: key},
                 'original_reply_text' : {$set: ''}
             }));
         }
+        // console.log(this['reply_text'+index]);
+        // this['reply_text'+index].focus();
     }
-
     /**
      * 댓글 수정 저장.
      * 
@@ -103,16 +143,20 @@ class ReadReply extends Component {
      * @returns 
      * @memberof ReadReply
      */
-    saveEditedReplyText (index, key) {
+    _saveEditedReplyText () {
+        const index = this.state.reply_index;
+        const key = this.state.reply_key;
+        // enter를 쳤을 때, 두번 실행되는데 두번째 값은 ''이기 때문에 종료 시켜버림.
+        if(key === '') {return false}
         const el =  document.getElementsByClassName('read-reply-item')[index];
         const reply_text = el.getElementsByClassName('read-reply-text')[0];
-        if (reply_text.innerHTML.trim() === '') {
+        if (reply_text.innerText.trim() === '') {
             this.props.handleErrorMessage('reply-edit', '※내용을 입력해주세요.')
             return;
         } else {
             let URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '/reply/' + key + '.json'
-            axios.patch(URL, {'reply_text': reply_text.innerHTML}).then(() => this.props.getDB())
-            this.toggleReplyEditBtns(-1);
+            axios.patch(URL, {'reply_text': reply_text.innerText}).then(() => this.props.getDB())
+            this._toggleReplyEditBtns(-1, '');
             this.props.handleErrorMessage('', '')
         }
     }
@@ -123,11 +167,11 @@ class ReadReply extends Component {
      * @param {any} key 
      * @memberof ReadReply
      */
-    cancelEditReplyText (index, key) {
-        const el =  document.getElementsByClassName('read-reply-item')[index];
+    _cancelEditReplyText () {
+        const el =  document.getElementsByClassName('read-reply-item')[this.state.reply_index];
         const reply_text = el.getElementsByClassName('read-reply-text')[0];
-        reply_text.innerHTML = this.state.original_reply_text;
-        this.toggleReplyEditBtns(-1);
+        reply_text.innerText = this.state.original_reply_text;
+        this._toggleReplyEditBtns(-1, '');
     }
     /**
      * 댓글 수정에서 엔터를 누르면 저장.
@@ -137,10 +181,16 @@ class ReadReply extends Component {
      * @returns 
      * @memberof ReadReply
      */
-    replyEditEnterCheck(index, key) {
-        if(event.keyCode === 13) {
-            this.saveEditedReplyText(index, key);
-            return;
+    _replyEditEnterCheck(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // reply_editable 값으로 댓글 등록인지 수정인지 구분
+        if(this.state.reply_editable===true && e.keyCode === 13) {
+            this._saveEditedReplyText();
+            return false;
+        } else if(this.state.reply_editable===false && e.keyCode === 13) {
+            this._addReply();
+            return false;   
         }
     }
     render() {
@@ -157,8 +207,8 @@ class ReadReply extends Component {
             </div>) : (
             <div className="read-reply-input">
                 <h2 className="read-reply-title"> 댓글작성 </h2>
-                <textarea className="read-reply-textarea" placeholder="댓글을 입력해주세요."/> 
-                <button className="read-reply-submit" type="button" onClick={this.addReply}>등록</button>
+                <input type="text" className="read-reply-textinput" placeholder="댓글을 입력해주세요." onKeyUp = {(e) => _replyEditEnterCheck(e)}/> 
+                <button className="read-reply-submit" type="button" onClick={this._addReply}>등록</button>
                 { reply_submit_error_message}
             </div>
         );
@@ -169,15 +219,15 @@ class ReadReply extends Component {
                 //  저장 취소 버튼
                 const edit_btns = user_id === item[key].user_uid && this.state.reply_editable && this.state.reply_index === index ? (
                     <div className="read-reply-edit-btns">
-                        <button className="read-reply-edit-save" type="button" onClick={() => this.saveEditedReplyText(index, key)}>저장</button>
-                        <button className="read-reply-edit-cancel" onClick={() => this.cancelEditReplyText(index, key)} type="button">취소</button> 
+                        <button className="read-reply-edit-save" type="button" onClick={this._saveEditedReplyText}>저장</button>
+                        <button className="read-reply-edit-cancel" onClick={this._cancelEditReplyText} type="button">취소</button> 
                     </div>
                 ) : ""
                 // 수정 삭제 버튼 
                 const reply_btns = user_id === item[key].user_uid && !this.state.reply_editable ? (
                     <div className="read-reply-item-btns">                         
-                        <button className="read-reply-edit" onClick={() => this.toggleReplyEditBtns(index)} type="button">수정</button>
-                        <button className="read-reply-delete" onClick={() => this.deleteReply(key)}type="button">삭제</button>
+                        <button className="read-reply-edit" onClick={() => this._toggleReplyEditBtns(index, key)} type="button">수정</button>
+                        <button className="read-reply-delete" onClick={() => this._deleteReply(key)}type="button">삭제</button>
                     </div>
                 ) : "";
                 // 수정 에러 메세지
@@ -195,8 +245,11 @@ class ReadReply extends Component {
                     </div>
                     <p className="read-reply-text" 
                         suppressContentEditableWarning="true" 
-                        contentEditable={this.state.reply_index === index && this.state.reply_editable} 
-                        onKeyUp={() => this.replyEditEnterCheck(index, key)}> 
+                        contentEditable={this.state.reply_index === index && this.state.reply_editable}
+                        autoFocus
+                        ref={(ref)=> { this['reply_text'+index] = ref;}}
+                        onKeyUp = {(e) => _replyEditEnterCheck(e)}
+                        > 
                         {item[key].reply_text}
                     </p> 
                     {edit_error_message}

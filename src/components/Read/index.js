@@ -18,7 +18,7 @@ class Read extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.getReadItem = this.getReadItem.bind(this);
+        this._getReadItem = this._getReadItem.bind(this);
     }
     shouldComponentUpdate(nextProps) {
         // 댓글이 변경된 경우 state 값에 반영해준다. nextProps의 값으로 check. 
@@ -34,12 +34,12 @@ class Read extends Component {
         if(Object.keys(this.props.app_lists).length === 0) {
             this.props.handleGetListDB();
             // set...time...out... 
-            setTimeout(this.getReadItem, 2000);
+            setTimeout(this._getReadItem, 2000);
         } else {
-            this.getReadItem();
+            this._getReadItem();
         }
     }
-    getReadItem() {
+    _getReadItem() {
         const read_item = this.props.app_lists.filter(list => {
             return this.props.match.params.key === list.key
         }).pop();

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as actions from '../../actions';
-
 import { connect } from 'react-redux';
 import update from 'react-addons-update';
+import {Link} from 'react-router-dom';
 
 // 컴포넌트
 import ListSort from './ListSort';
@@ -25,12 +25,13 @@ class List extends Component {
             'is_sort_selected': false
         }
         this.autocomplete = {};
-        this.initGoogle = this.initGoogle.bind(this);
-        this.listCheckSortType = this.listCheckSortType.bind(this);
-        this.listPageSetting = this.listPageSetting.bind(this);
-        this.llistSelectorOnClick = this.llistSelectorOnClick.bind(this);
-        this.setSortSelectorRef = this.setSortSelectorRef.bind(this); 
-        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this._initGoogle = this._initGoogle.bind(this);
+        this._listCheckSortType = this._listCheckSortType.bind(this);
+        this._listPageSetting = this._listPageSetting.bind(this);
+        this._llistSelectorOnClick = this._llistSelectorOnClick.bind(this);
+        this._setSortSelectorRef = this._setSortSelectorRef.bind(this); 
+        this._handleClickOutside = this._handleClickOutside.bind(this);
+        this._getListLocationSearch = this._getListLocationSearch.bind(this);
     }
     shouldComponentUpdate(nextProps, nextState) { 
         // 스토어의 페이지 인덱스와 스테이트의 인덱스를 동일하게 해줌.
@@ -39,40 +40,42 @@ class List extends Component {
         } 
         // DB 갱신된 경우, 변경된 DB로 정렬 후 state를 변경한다.
         if ((this.props.app_lists).length !== 0 && nextProps.app_lists!==this.props.app_lists) {
-            this.listCheckSortType(nextProps.app_lists);
+            this._listCheckSortType(nextProps.app_lists);
         }
         return true; 
     }
     componentDidMount() {
+        // 컴포넌트에 접근하였을 때 최상위로 이동
+        window.scrollTo(0,0);
+        
         // 메인을 통해서 List로 들어오지 않은경우(새로고침, 주소직접입력 등) DB를 가져온다.
         if(Object.keys(this.props.app_lists).length === 0) {
             this.props.handleGetDB()
-            setTimeout(this.listCheckSortType, 2000);
+            setTimeout(this._listCheckSortType, 2000);
         
         } else {
-            this.listCheckSortType();
+            this._listCheckSortType();
         }
         
         // google 초기화 
-        this.initGoogle();
+        this._initGoogle();
 
         // 페이지 세팅(수정필요: setTimeout)
-        setTimeout(this.listPageSetting, 2500);
+        setTimeout(this._listPageSetting, 2500);
 
         // 포커스 나갔을 때 이벤트
-        document.addEventListener('mousedown', this.handleClickOutside);
+        document.addEventListener('mousedown', this._handleClickOutside);
 
         // 라우터 ... path값과 쿼리에 따라서 list item이 달라져야 한다능.... OMG
         // console.log(this.props.location);
-
     }
     // google 초기화 
-    initGoogle() {
+    _initGoogle() {
         const google = window.google; 
         // 자동 완성을 연결할 input창 
         const input = document.getElementsByClassName('list-search-input')[0]; 
         this.autocomplete = new google.maps.places.Autocomplete(input, { types: ['(regions)'] }); 
-        this.autocomplete.addListener('place_changed', this.getListLocationSearch.bind(this)); 
+        this.autocomplete.addListener('place_changed', this._getListLocationSearch); 
     }
     
     /** 
@@ -85,7 +88,7 @@ class List extends Component {
      * @param {object} autocomplete - getPlace() 메소드를 사용하기 위해 초기화 하면서 전달 받음 
      * @memberof List 
      */ 
-    getListLocationSearch() { 
+    _getListLocationSearch() { 
         const lists = JSON.parse(JSON.stringify(this.props.app_lists)); 
         const compare_address_type = ["country",  
                                       "administrative_area_level_1", 
@@ -121,7 +124,7 @@ class List extends Component {
         // dispatch!
         this.props.handleListLocationSearch(sorted_list_item_array);
         // 검색 후 다시 페이지의 개수를 구한다. 
-        this.listPageSetting();
+        this._listPageSetting();
         // state에 반영
         this.setState(this.props.sorted_list)
     }    
@@ -135,7 +138,7 @@ class List extends Component {
      * @returns Sort Type에 맞는 메소드 
      * @memberof List
     * */
-    listCheckSortType(nextProps) {
+    _listCheckSortType(nextProps) {
         
         const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
         const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
@@ -176,7 +179,7 @@ class List extends Component {
      * 
      * @memberof List
     * */
-    listPageSetting() {
+    _listPageSetting() {
         this.props.handleListPageCount(this.props.sorted_list);
         this.setState(this.props.sorted_list);
     }
@@ -187,7 +190,7 @@ class List extends Component {
      * 
      * @memberof List
      */
-    llistSelectorOnClick() {
+    _llistSelectorOnClick() {
         this.setState(update(this.state, {
             'is_sort_selected' : {$set: !this.state.is_sort_selected}
         }));
@@ -198,12 +201,12 @@ class List extends Component {
      * 
      * @memberof List
      */
-    setSortSelectorRef(node) {
+    _setSortSelectorRef(node) {
         // node는 ref가 연결된 list-sort-box div
         this.sortSelectorRef = node;
     }
 
-    handleClickOutside(event) {
+    _handleClickOutside(event) {
         // list-sort-box가 클릭된 요소를 포함하고 있지 않다면 setState를 실행해서 보이고있는 것을 닫아준다.
         if (this.sortSelectorRef && !this.sortSelectorRef.contains(event.target)) {
             this.setState(update(this.state, {
@@ -231,11 +234,11 @@ class List extends Component {
         return(
         <div className = "list-container">
           <div className="list">
-            <h1 className="list-title">당신의 다음 목적지는 어디인가요?</h1>
+            <h2 className="list-title"><Link to="/List/All"> 당신의 다음 목적지는 어디인가요? </Link> </h2>
             <div className="list-search-sort-box">
                 <ListSearch/>
-                <div className="list-sort-box" ref={this.setSortSelectorRef}>
-                    <button className="list-selected-item list-sort-btn" type="button" onClick={this.llistSelectorOnClick}>{list_selected_sort_item}</button>
+                <div className="list-sort-box" ref={this._setSortSelectorRef}>
+                    <button className="list-selected-item list-sort-btn" type="button" onClick={this._llistSelectorOnClick}>{list_selected_sort_item}</button>
                     {list_sort_selector_render}
                 </div>
             </div>

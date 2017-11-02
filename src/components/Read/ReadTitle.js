@@ -21,9 +21,12 @@ class ReadTitle extends Component {
         this.state = {
             'show_ask_window': false 
         }
-        this.getTagItems = this.getTagItems.bind(this);
-        this.toggleAskWindow = this.toggleAskWindow.bind(this);
-        this.deleteReadItem = this.deleteReadItem.bind(this);
+        this._getTagItems = this._getTagItems.bind(this);
+        this._toggleAskWindow = this._toggleAskWindow.bind(this);
+        this._deleteReadItem = this._deleteReadItem.bind(this);
+    }
+    componentDidMount() {
+        window.scrollTo(0,0);
     }
     /**
      * 배열에 담겨있는 tag들을 화면에 출력하기 위한 HTML 요소로 분리.
@@ -31,20 +34,20 @@ class ReadTitle extends Component {
      * @returns 각 태그를 가지고있는 <a> 요소
      * @memberof ReadTitle
      */
-    getTagItems() {
+    _getTagItems() {
         // link로 변경하여 리스트에서 해당 태그를 찾아서, 출력 필요.
         return this.props.item.tag && this.props.item.tag.map((tag, index) => {
             return (<Link className="read-title-content" to={{pathname:"/List/Tag", search: "" + tag }} key={'tag'+ index}>{'#' + tag + ' '}</Link>)
         })
     }
-    toggleAskWindow() {
+    _toggleAskWindow() {
         this.setState(update(this.state, {
             'show_ask_window' : {$set: !this.state.show_ask_window},
         }));
     }
-    deleteReadItem () {
+    _deleteReadItem () {
         const URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '.json'
-        this.toggleAskWindow();
+        this._toggleAskWindow();
         // 글 삭제후 DB를 다시 불러온다.
         axios.delete(URL).then(() => this.props.getDB());
         // 메인으로 이동
@@ -53,7 +56,7 @@ class ReadTitle extends Component {
     render() {
         const item = this.props.item
         // 배열에 들어가 있는 tag들 분리.
-        const read_tag_item_render = this.getTagItems();
+        const read_tag_item_render = this._getTagItems();
         // 글쓴 날짜 표시 형식 변경
         const convert_write_date = item.write_date.slice(0,4) + "." + item.write_date.slice(4,6) + "." + item.write_date.slice(6,8)
        
@@ -67,7 +70,7 @@ class ReadTitle extends Component {
             <div className="read-title-buttons">
                 {/* Editor로 연결하는 Path는 우창님과 상담후 수정 필요. */}
                 <Link to={`/Editor/ ${item.uid} / ${item.key} `}>수정</Link>
-                <button onClick={this.toggleAskWindow} type="button">삭제</button>
+                <button onClick={this._toggleAskWindow} type="button">삭제</button>
             </div>
         ) : "" ;
 
@@ -75,8 +78,8 @@ class ReadTitle extends Component {
         const read_ask_window_render = this.state.show_ask_window ? ( 
             <div className="read-delete">
                 <p className="read-delete-comment">글을 삭제하시겠습니까?</p>
-                <button type="button" onClick={this.toggleAskWindow} className="read-delete-cancel">취소</button>
-                <button type="button" onClick={this.deleteReadItem} className="read-delete-excute">삭제</button>
+                <button type="button" onClick={this._toggleAskWindow} className="read-delete-cancel">취소</button>
+                <button type="button" onClick={this._deleteReadItem} className="read-delete-excute">삭제</button>
             </div>) : "";
 
         // 이미지 크기가 너무커서 추가한 부분. 나중에 CSS 작업하면서 삭제!! 
