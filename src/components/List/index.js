@@ -13,7 +13,11 @@ import ListPages from './ListPages';
 import ListFooter from './ListFooter';
 
 
-class List extends Component {
+class List extends Component {   
+    // 라우터 히스토리 사용을 위해.
+    static contextTypes = {
+        router: PropTypes.object
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -32,8 +36,12 @@ class List extends Component {
         this._setSortSelectorRef = this._setSortSelectorRef.bind(this); 
         this._handleClickOutside = this._handleClickOutside.bind(this);
         this._getListLocationSearch = this._getListLocationSearch.bind(this);
+        this._checkRouterPath = this._checkRouterPath.bind(this);
     }
     shouldComponentUpdate(nextProps, nextState) { 
+        if(this.props.history.location.pathname !== this.props.location.pathname) {
+            this._checkRouterPath();
+        }
         // 스토어의 페이지 인덱스와 스테이트의 인덱스를 동일하게 해줌.
         if ((this.props.app_lists).length !== 0 && nextProps.sorted_list.page_index !== this.state.page_index) {
             this.setState(nextProps.sorted_list);
@@ -127,10 +135,10 @@ class List extends Component {
         this._listPageSetting();
         // state에 반영
         this.setState(this.props.sorted_list)
+        const router_path = '/List/SerachBox?' + search_place;
+        // 라우터 설정
+        this.context.router.history.push(router_path);
     }    
-
-
-
 
     /**
      * 렌더할 때, 이전에 정렬했던 타입을 확인 후 리스트를 재정렬(디폴트 최신순)
@@ -139,7 +147,6 @@ class List extends Component {
      * @memberof List
     * */
     _listCheckSortType(nextProps) {
-        
         const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
         const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
         const list_sort_type = sorted_list && sorted_list.type !== "" ? sorted_list.type : "" ;
@@ -163,7 +170,7 @@ class List extends Component {
                 }));
                 return ;
             case "LIST_LOCATION_SEARCH":
-                this.getListLocationSearch();
+                this._getListLocationSearch();
                 return ;
             default:
                 lists = app_lists;
@@ -172,7 +179,6 @@ class List extends Component {
                 return ;
         }
     }
-
 
     /**
      * 리스트 아이템 개수로 표시한 페이지 수 계산.
@@ -183,7 +189,6 @@ class List extends Component {
         this.props.handleListPageCount(this.props.sorted_list);
         this.setState(this.props.sorted_list);
     }
-
 
     /**
      * 최신순/인기순 선택창 토글
@@ -205,13 +210,31 @@ class List extends Component {
         // node는 ref가 연결된 list-sort-box div
         this.sortSelectorRef = node;
     }
-
     _handleClickOutside(event) {
         // list-sort-box가 클릭된 요소를 포함하고 있지 않다면 setState를 실행해서 보이고있는 것을 닫아준다.
         if (this.sortSelectorRef && !this.sortSelectorRef.contains(event.target)) {
             this.setState(update(this.state, {
                 'is_sort_selected' : {$set: false}
             }));
+        }
+    }
+
+
+
+
+    _checkRouterPath(){
+        const path_name = this.props.history.location.pathname
+        console.log('path_name', path_name);
+        switch (path_name) {
+            case '/List/All':
+                console.log('check');
+                const after_dispatch_list = this.props.handleListSortByLastest(this.props.app_lists);
+                this.setState(update(this.state, {
+                    'list' : {$set: after_dispatch_list},
+                }));
+            return;
+            default:
+                break;
         }
     }
     render() {
