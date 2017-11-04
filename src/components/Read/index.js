@@ -49,9 +49,11 @@ class Read extends Component {
         return Object.keys(this.state).length === 0 ? (<p className="read-item-loading"> 잠시만 기다려 주세요. </p>) : (
             <div className="read">
                 <ReadTitle item = {this.state} getDB={this.props.handleGetListDB}/>
-                <ReadContents item = {this.state}/>
-                <ReadReply item = {this.state} getDB={this.props.handleGetListDB} handleErrorMessage={this.props.throwErrorMessage} error_message={this.props.errors}/>
-                <ReadButtons/>
+                <div className="read-body">
+                    <ReadContents item = {this.state}/>
+                    <ReadReply item = {this.state} getDB={this.props.handleGetListDB} handleErrorMessage={this.props.throwErrorMessage} error_message={this.props.errors}/>
+                    <ReadButtons/>
+                </div>
             </div>
         );
     }

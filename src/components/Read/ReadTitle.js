@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import update from 'react-addons-update';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import * as actions from '../../actions'
+
 
 
 const propTypes = {
@@ -24,6 +27,7 @@ class ReadTitle extends Component {
         this._getTagItems = this._getTagItems.bind(this);
         this._toggleAskWindow = this._toggleAskWindow.bind(this);
         this._deleteReadItem = this._deleteReadItem.bind(this);
+        this._handleTagSearch = this._handleTagSearch.bind(this);
     }
     componentDidMount() {
         window.scrollTo(0,0);
@@ -37,21 +41,46 @@ class ReadTitle extends Component {
     _getTagItems() {
         // link로 변경하여 리스트에서 해당 태그를 찾아서, 출력 필요.
         return this.props.item.tag && this.props.item.tag.map((tag, index) => {
-            return (<Link className="read-title-content" to={{pathname:"/List/Tag", search: "" + tag }} key={'tag'+ index}>{'#' + tag + ' '}</Link>)
+            return (<Link className="read-title-content" 
+                          to={{pathname:"/List/Tag", search: "" + tag }} 
+                          key={'tag'+ index}
+                          onClick={() => {
+                              this._handleTagSearch(tag);
+                          }}
+                          >
+                          {'#' + tag + ' '}
+                    </Link>)
         })
     }
+    _handleTagSearch(tag) {
+       const tag_list = this.props.app_lists.filter(list => {
+           return list.tag.indexOf(tag) > -1;
+        })
+        this.props.listTagSearch(tag_list);
+    }
+
+    /**
+     * 글 삭제 여부를 묻는 창 토글
+     * 
+     * @memberof ReadTitle
+     */
     _toggleAskWindow() {
         this.setState(update(this.state, {
             'show_ask_window' : {$set: !this.state.show_ask_window},
         }));
     }
+    
+    /**
+     * 현재보고 있는 글을 삭제 
+     * @memberof ReadTitle
+     */
     _deleteReadItem () {
-        const URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '.json'
-        this._toggleAskWindow();
-        // 글 삭제후 DB를 다시 불러온다.
-        axios.delete(URL).then(() => this.props.getDB());
-        // 메인으로 이동
-        this.context.router.history.push("/");
+            const URL = 'https://traveler-in-blog.firebaseio.com/lists/' + this.props.item.key + '.json'
+            this._toggleAskWindow();
+            // 글 삭제후 DB를 다시 불러온다.
+            axios.delete(URL).then(() => this.props.getDB());
+            // 메인으로 이동
+            this.context.router.history.push("/");
     }
     render() {
         const item = this.props.item
@@ -82,16 +111,11 @@ class ReadTitle extends Component {
                 <button type="button" onClick={this._deleteReadItem} className="read-delete-excute">삭제</button>
             </div>) : "";
 
-        // 이미지 크기가 너무커서 추가한 부분. 나중에 CSS 작업하면서 삭제!! 
-        const style = {
-            'width': '100px',
-            'height': 'auto'
-        }
         return ( 
             <div className="read-title-box">
                 <h2 className="read-title">{item.title}</h2>
                 <div className="read-title-image">
-                    <img style={style} src={item.title_img} alt={"블로그" + item.title + "의 타이틀 이미지"}/>
+                    <img src={item.title_img} alt={"블로그" + item.title + "의 타이틀 이미지"}/>
                 </div>
                 <div className="read-title-contents">
                     {read_tag_item_render}
@@ -106,4 +130,11 @@ class ReadTitle extends Component {
 }
 ReadTitle.propTypes = propTypes;
 ReadTitle.defaultProps = defaultProps;
-export default ReadTitle;
+
+const mapStateToProps = (state) => {
+    return {
+        app_lists: state.list_db
+    }
+  }
+  
+export default connect(mapStateToProps, actions)(ReadTitle);

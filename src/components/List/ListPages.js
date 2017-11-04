@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as actions from '../../actions';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 class ListPages extends Component {
     constructor(props) {
         super(props);

@@ -38,6 +38,12 @@ export function listLocationSearch (lists) {
     lists
   }
 }
+export function listTagSearch (lists) {
+  return {
+    type: types.LIST_TAG_SEARCH,
+    lists
+  }
+}
 
 export function listPageCount (page_amount) {
   return {

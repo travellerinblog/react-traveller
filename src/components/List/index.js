@@ -40,6 +40,7 @@ class List extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) { 
         if(this.props.history.location.pathname !== this.props.location.pathname) {
+            console.log('history')
             this._checkRouterPath();
         }
         // 스토어의 페이지 인덱스와 스테이트의 인덱스를 동일하게 해줌.
@@ -97,6 +98,11 @@ class List extends Component {
      * @memberof List 
      */ 
     _getListLocationSearch() { 
+        // 아직 autocomplate 값이 설정 되지 않았을 떄는 종료
+        // 검색된 상태에서 글에 들어갔다 돌아왔을 때의 문제 해결.
+        if(this.autocomplete.getPlace === undefined) {
+            return;
+        }
         const lists = JSON.parse(JSON.stringify(this.props.app_lists)); 
         const compare_address_type = ["country",  
                                       "administrative_area_level_1", 
@@ -148,12 +154,14 @@ class List extends Component {
     * */
     _listCheckSortType(nextProps) {
         const sorted_list = JSON.parse(JSON.stringify(this.props.sorted_list));
+        console.log('sorted_list:',sorted_list);
         const app_lists = nextProps !== undefined ? JSON.parse(JSON.stringify(nextProps)) : JSON.parse(JSON.stringify(this.props.app_lists));
         const list_sort_type = sorted_list && sorted_list.type !== "" ? sorted_list.type : "" ;
         let after_dispatch_list = {}
         let lists = [];
         switch (list_sort_type) {
             case "LIST_SORT_BY_LATEST":
+            case "LIST_TAG_SEARCH":
                 // serach_flag 가 'search'인 경우는 전체 리스트가 아니라, 검색한 리스트(지금 화면에 보여지고 있는)를 가지고 정렬해야한다.
                 lists = sorted_list.search_flag === 'search' ? sorted_list.list : app_lists
                 // setState를 하기 위해 정렬된 list를 반환받는다.
@@ -219,15 +227,10 @@ class List extends Component {
         }
     }
 
-
-
-
     _checkRouterPath(){
         const path_name = this.props.history.location.pathname
-        console.log('path_name', path_name);
         switch (path_name) {
             case '/List/All':
-                console.log('check');
                 const after_dispatch_list = this.props.handleListSortByLastest(this.props.app_lists);
                 this.setState(update(this.state, {
                     'list' : {$set: after_dispatch_list},
