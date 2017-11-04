@@ -27,6 +27,12 @@ export default function (state = initial_state, action) {
         'list': {$set: action.lists},
         'search_flag': {$set: 'search'}
       })
+    case actions.LIST_TAG_SEARCH:
+      return update(state, {
+        'type': {$set: action.type},
+        'list': {$set: action.lists},
+        'search_flag': {$set: 'search'}
+      })
     case actions.LIST_PAGE_COUNT:
     return update(state, {
       'page_amount': {$set: action.page_amount}

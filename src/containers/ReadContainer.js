@@ -6,31 +6,15 @@ import Read from '../components/Read';
 
 const mapStateToProps = (state) => {
   return {
-      app_lists: state.getDB.DB_lists,
-      sorted_list: state.list,
+      app_lists: state.list_db,
       errors: state.Errors
   }
 }
-
 const mapDispatchToProps = (dispatch) => ({
-  handleListSortByLastest : (lists) => {
-      const sorted_list_item_array = utils.getListSortByLastest(lists);
-      dispatch(actions.listSortByLastest(sorted_list_item_array));
-      return sorted_list_item_array;
+  handleGetListDB : () => {
+    dispatch(actions.listDB())
   },
-  handleListSortByPopular: (lists) => {
-      const sorted_list_item_array = utils.getListSortByPopular(lists);
-      dispatch(actions.listSortByPopular(sorted_list_item_array));
-  },
-  handleListLocationSearch: (lists) => dispatch(actions.listLocationSearch(lists)),
-  handleListPageCount: (lists) => {
-      const page_amount = utils.getListPageAmount(lists);
-      dispatch(actions.listPageCount(page_amount))
-  },
-  handleListPageIndexing: () => {
-      dispatch(actions.listPageIndexing(index));
-  },
-  throwSearchErrorMessage: (error_type, message) => dispatch(actions.throwSearchErrorMessage(error_type, message))
+  throwErrorMessage: (error_type, message) => dispatch(actions.throwErrorMessage(error_type, message))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Read);

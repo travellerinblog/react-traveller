@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from '../Carousel/';
 
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { listDB, userDB } from '../../actions/';
-
+import { Route, Link } from 'react-router-dom';
 
 class Main extends Component {
   constructor(props) {
@@ -92,14 +93,11 @@ class Main extends Component {
       ]
     }
   }
-
   componentDidMount = () => {
     this.props.listDB();
     this.props.userDB();
   }
-  
   render() {
-    
     return (
       <main>
         <div className="visual-container">
@@ -124,7 +122,7 @@ class Main extends Component {
             <div>
               <h3 className="title">어디로 갈래?</h3>
               {/* NavLink */}
-              <a href="#">더보기</a>
+              <Link to="/List/All">더보기</Link>
             </div>
             <Carousel carousel_item_info={this.state.carousel_item_info}/>
           </section>
@@ -132,7 +130,7 @@ class Main extends Component {
             <div>
               <h3 className="title">나 여기 왔다 갔다!</h3>
               {/* NavLink */}
-              <a href="#">더보기</a>
+              <Link to="/List/All">더보기</Link>
             </div>
             <Carousel carousel_item_info={this.state.carousel_item_info}/>
           </section>

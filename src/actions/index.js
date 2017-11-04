@@ -3,7 +3,7 @@ import * as types from './ActionTypes';
 
 export function listDB() {
   
-  const request = axios.get('https://traveller-in-blog.firebaseio.com/lists.json');
+  const request = axios.get('https://traveler-in-blog.firebaseio.com/lists.json');
   return {
     type: types.LIST_DB,
     payload: request
@@ -11,7 +11,7 @@ export function listDB() {
 }
 export function userDB() {
   
-  const request = axios.get('https://traveller-in-blog.firebaseio.com/users.json');
+  const request = axios.get('https://traveler-in-blog.firebaseio.com/users.json');
   return {
     type: types.USER_DB,
     payload: request
@@ -38,6 +38,12 @@ export function listLocationSearch (lists) {
     lists
   }
 }
+export function listTagSearch (lists) {
+  return {
+    type: types.LIST_TAG_SEARCH,
+    lists
+  }
+}
 
 export function listPageCount (page_amount) {
   return {
@@ -53,9 +59,9 @@ export function listPageIndexing (page_index) {
   }
 }
 
-export function throwSearchErrorMessage (error_type, message) {
+export function throwErrorMessage (error_type, message) {
   return {
-    type: types.THROW_SEARCH_ERROR_MESSAGE,
+    type: types.THROW_ERROR_MESSAGE,
     error_type,
     message
   }

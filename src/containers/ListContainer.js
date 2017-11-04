@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
+import { listDB, userDB } from '../actions';
+
 // 컴포넌트
 import List from '../components/List';
 // 유틸
 import * as utils from '../utils/ListUtils';
 
 const mapStateToProps = (state) => {
-    console.log('ListContainer: ', state);
     return {
         app_lists: state.list_db,
         sorted_list: state.list,
@@ -16,8 +17,12 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+    handleGetDB : () => {
+        dispatch(actions.listDB())
+        dispatch(actions.userDB())
+
+    },
     handleListSortByLastest : (lists) => {
-        console.log('lists: ', lists);
         const sorted_list_item_array = utils.getListSortByLastest(lists);
         dispatch(actions.listSortByLastest(sorted_list_item_array));
         return sorted_list_item_array;
@@ -34,7 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
         return;
     },
     handleListPageIndexing: () => dispatch(actions.listPageIndexing(index)),
-    throwSearchErrorMessage: (error_type, message) => dispatch(actions.throwSearchErrorMessage(error_type, message))
+    throwErrorMessage: (error_type, message) => dispatch(actions.throwErrorMessage(error_type, message))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);
