@@ -27,12 +27,12 @@ export default class Carousel extends Component {
       const alt = data.tag.join(' ');
       const time = data.time;
       let pathname = '';
-      let param = '';
+      let search = '';
       if( data.what === 'where' ) {
-        param = data.country;
-        pathname = '/List/';
+        search = data.title;
+        pathname = '/List/country';
       } else if ( data.what === 'bloglist' ) {
-        param = data.key;
+        search = data.key;
         pathname = '/Read/';
       }
 
@@ -41,7 +41,7 @@ export default class Carousel extends Component {
       }
       return (
         <li key={data.title}>
-          <Link to={{pathname, param}}>
+          <Link to={{pathname, search}}>
             <figure>
               <div className="carousel-img-box">
                 <img src={data.src} alt={alt} />
