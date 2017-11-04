@@ -49,7 +49,11 @@ export default class EditorContent extends Component {
     this.setState({
       contents: this.state.contents.concat(temp_arr),
       input_value: ''
+    }, () => {
+      this.props.setContentsData(this.state.contents);
     });
+
+    
   }
 
   setImageData = (file, data) => {
@@ -72,7 +76,10 @@ export default class EditorContent extends Component {
 
     this.setState({
       contents: this.state.contents.concat(temp_arr)
+    }, () => {
+      this.props.setContentsData(this.state.contents);
     });
+    this.refs.newLine.focus();
   }
   /**
    * @func revisedContentData 
@@ -82,8 +89,10 @@ export default class EditorContent extends Component {
     const index = this.state.rendered_inactived_content_index;
     const value = this.state.rendered_input_value;
     let contents = this.state.contents;
+    let is_next_content_actived = false;
 
     contents = contents.map((data, _index) => {
+
 
       data.is_active = false;
       
@@ -91,11 +100,31 @@ export default class EditorContent extends Component {
         data.value = value;
       }
 
+      // index !== 0 일 때
+      // 이전 is_active를 true로 바꾸고 state의 rendered 값을 바꿔야함.
+
+      if( index < _index ) {
+        // 1. 현재 자신의 다음에 있는 type이 텍스트인 것만 골라서 renderedTextActive함수를 실행시켜줘야 함.
+        if( !is_next_content_actived && data.type === 'text' ) {
+          data.is_active = true;
+          this.setState({
+            rendered_input_value: data.value,
+            rendered_inactived_content_index: _index
+          });
+          is_next_content_actived = true;
+        } 
+      }
+
+      if( (contents.length - 1) === _index ) {
+        this.refs.newLine.focus();
+      }
       return data;
     });
 
     this.setState({
       contents
+    }, () => {
+      this.props.setContentsData(this.state.contents);
     });
   }
   /**
@@ -131,10 +160,12 @@ export default class EditorContent extends Component {
   }
   /**
    * @func onKeyPress 
-   * @description input의 value가 빈값이고 Enter를 쳤을 때 setTextData 함수를 실행시키는 함수.
+   * @description input의 value가 빈값이 아니고 Enter를 쳤을 때 setTextData 함수를 실행시키는 함수.
    */ 
   onKeyPress = (e) => {
     var useage = e.target.getAttribute('data-useage');
+
+    // if( e.charCode )
 
     if( (this.state.rendered_input_value !== '' || this.state.input_value !== '') && e.charCode === 13 ) {
       if( useage === 'newLine' ) {
@@ -151,17 +182,39 @@ export default class EditorContent extends Component {
    *              요소의 value값으로 집어넣어줌.
    */ 
   onKeyUp = (e) => {
-    var useage = e.target.getAttribute('data-useage');
+    let useage = e.target.getAttribute('data-useage');
     let contents = this.state.contents;
+    let rendered_index = this.state.rendered_inactived_content_index;
+
+    const contents_length = contents.length;
+
+    console.log(e.keyCode);
+    // up 38 down 40
+    if( useage === 'revise' && e.keyCode === 38 ) {
+      rendered_index--;
+
+      if( rendered_index < 0 ) {
+        return;
+      }
+      this.renderedTextActived(rendered_index);
+    }
+
+    if( useage === 'revise' && e.keyCode === 40 ) {
+      rendered_index++;
+      if( rendered_index > (contents_length - 1) ) {
+        this.refs.newLine.focus();
+        return;
+      }
+      this.renderedTextActived(rendered_index);
+    }
 
     if( useage === 'newLine' && this.state.input_value === '' && e.keyCode === 8 ) {
       
-      let text_contents = contents.find(data => {
-        return data.type === 'text';
-      })
-
+      console.log('contents[contents.lenth - 1]: ', contents[contents.length - 1]);
+      let is_image_contents = contents[contents.length - 1].type === 'image' ? true : false; 
+      
       // console.log('text_contents: ', text_contents);
-      if( !text_contents ) {
+      if( is_image_contents ) {
         return;
       }
 
@@ -170,6 +223,8 @@ export default class EditorContent extends Component {
       this.setState({
         contents: contents,
         input_value: last_content.value
+      }, () => {
+        this.props.setContentsData(this.state.contents);
       });
 
       return;
@@ -177,39 +232,55 @@ export default class EditorContent extends Component {
 
     if( useage === 'revise' && this.state.rendered_input_value === '' && e.keyCode === 8 ) {
       const inactived_index = this.state.rendered_inactived_content_index;
-
-      console.log('inactived_index: ', inactived_index);
+      let new_rendered_index = 0;
+      
+      if( inactived_index !== 0 ) {
+        for(let i = inactived_index - 1; i >= 0; i--) {
+          const content = contents[i];
+          
+          if( content.type === 'text' ) {
+            new_rendered_index = i;
+            break;
+          }
+        }
+        contents = this.renderedTextActived(new_rendered_index);
+      }
+      
       contents.splice(inactived_index, 1);      
 
-      console.log('contents: ', contents);
       this.setState({
         contents
-      })
+      }, () => {
+        this.props.setContentsData(this.state.contents);
+      });
     } 
   }
 
-  /**
-   * @func onClickRenderedContent 
-   * @description 기존 content value를 수정하기 위한 함수.
-   */ 
-  onClickRenderedContent = (e) => {
-    const index = parseInt(e.target.getAttribute('data-index'));
+  renderedTextActived = (index) => {
     let contents = this.state.contents;
 
-    contents = contents.map((data, _index) => {
-
+    return contents.map((data, _index) => {
+      
       if( _index === index ) {
         data.is_active = true;
         this.setState({
           rendered_input_value: data.value,
           rendered_inactived_content_index: index
-        })
+        });
       } else {
         data.is_active = false;
       }
 
       return data;
     });
+  }
+  /**
+   * @func onClickRenderedContent 
+   * @description 기존 content value를 수정하기 위한 함수.
+   */ 
+  onClickRenderedContent = (e) => {
+    const index = parseInt(e.target.getAttribute('data-index'));
+    let contents = this.renderedTextActived(index);
 
     this.setState({
       contents
@@ -228,7 +299,8 @@ export default class EditorContent extends Component {
   }
 
   removeImage = (e) => {
-    const index = e.target.getAttribute('data-index');
+    const index = e.target.parentNode.getAttribute('data-index');
+    console.log('removeImage index: ', index);
     let contents = this.state.contents;
     let is_delete = window.confirm('이미지를 삭제하시겠습니까?');
 
@@ -238,7 +310,10 @@ export default class EditorContent extends Component {
 
       this.setState({
         contents
+      }, () => {
+        this.props.setContentsData(this.state.contents);
       });
+      this.refs.newLine.focus();
     }
   }
   /**
@@ -310,7 +385,8 @@ export default class EditorContent extends Component {
         type="text"
         className="new-line"
         data-useage="newLine"
-        autoFocus={true}
+        autoFocus="true"
+        ref="newLine"
         placeholder="글을 입력해주세요."
         value={this.state.input_value} 
         onChange={(e) => { this.onChangeInputValue(e) }}
@@ -320,6 +396,15 @@ export default class EditorContent extends Component {
     );
   }
 
+  // componentDidMount = () => {
+    
+  // }
+  
+  componentDidMount = () => {
+    setTimeout(() => {
+      this.props.setContentsData(this.state.contents);
+    }, 2000);
+  }
   
   render() {
     return (

@@ -20,6 +20,7 @@ class App extends Component {
 				<div>
 					<Switch>
 						<Route exact path="/" component={Editor} />
+						{/* <Route exact path="/" component={Main} /> */}
 						{/* <Route path="/List/:param" param="" component={ListContainer} />
 						<Route path="/Read/:key" param="" component={ReadContainer} />
 						<Route path="/Editor/" component={Editor} /> */}

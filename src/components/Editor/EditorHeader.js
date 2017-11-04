@@ -15,6 +15,7 @@ export default class EditorHeader extends Component {
       sub_title: '',
       sub_title_status: false
     }
+
   }
 
   renderTitle = () => {
@@ -116,10 +117,12 @@ export default class EditorHeader extends Component {
       this.setState({
         title_status: !this.state.title_status
       });
+      this.props.setTitleData(this.state.title);
     } else if ( class_name === 'sub-title' ) {
       this.setState({
         sub_title_status: !this.state.sub_title_status
       });
+      this.props.setSubTitleData(this.state.sub_title);
     }
     
   }
