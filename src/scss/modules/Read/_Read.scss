@@ -1,0 +1,47 @@
+@import '../../partials';
+.read{
+  padding-top: 47px;
+  .read-title-box{
+    .read-title-image {
+      position: fixed;
+      z-index: -100;
+      width: 100%;
+      height: 700px;
+      img{
+        width: 100%;
+        height: auto;
+      }
+      &::after{ 
+        content: ""; 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        display: block; 
+        width: 100%; 
+        height: 700px; 
+        background: rgba(#181818, .6); 
+      } 
+    }
+  }
+  .read-body{
+    width: 100%;
+    height: 900px;
+    background: $color-w;
+    .read-contents-box{
+      height: 500px;
+      background: pink;
+    }
+  }
+}
+
+// @include mobile{
+
+// }
+
+@include tablet{
+
+}
+
+@include desktop{
+
+}

@@ -1,7 +1,7 @@
 
 import { combineReducers } from 'redux';
-import list from './List';
-import Errors from './Errors';
+import list from './reducer_list_item';
+import Errors from './reducer_error_messages';
 import Lists from './reducer_lists';
 import Users from './reducer_users';
 

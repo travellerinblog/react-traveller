@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// import Carousel from '../Carousel/';
+
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { listDB, userDB } from '../../actions/';

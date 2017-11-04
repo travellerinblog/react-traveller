@@ -10,10 +10,10 @@ const defaultProps = {
 // poprs로 받아오거나, 로컬스토리지에서 받아올 값
 const user_id = 'user1';
 // 로그인으로 연결하는 값
-const list_footer_goto_sign = (<a href=''> 시작하기 </a>)
+const list_footer_goto_sign = (<a className="list-footer-start list-footer-link" href=''> 시작하기 </a>)
 // 글쓰기로 연결하는 값
 const list_footer_goto_write = (
-    <Link to="/Editor/userid"> 글쓰러가기 </Link>
+    <Link className="list-footer-write list-footer-link" to="/Editor/userid"> 글쓰러가기 </Link>
 )
 // 출력해주는 값
 const list_footer_render = user_id ? list_footer_goto_write : list_footer_goto_sign;

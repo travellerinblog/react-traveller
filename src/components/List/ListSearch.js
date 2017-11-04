@@ -17,7 +17,7 @@ class ListSearch extends Component {
         return(
             <div className="list-search-box">
                 <input className="list-search-input" type="text" placeholder="검색할 나라/도시를 입력해주세요" />
-                <span> {error_message} </span>
+                <span className="list-search-error"> {error_message} </span>
             </div>
 
         );

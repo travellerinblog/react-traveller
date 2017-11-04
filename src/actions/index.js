@@ -38,6 +38,12 @@ export function listLocationSearch (lists) {
     lists
   }
 }
+export function listTagSearch (lists) {
+  return {
+    type: types.LIST_TAG_SEARCH,
+    lists
+  }
+}
 
 export function listPageCount (page_amount) {
   return {
@@ -53,9 +59,9 @@ export function listPageIndexing (page_index) {
   }
 }
 
-export function throwSearchErrorMessage (error_type, message) {
+export function throwErrorMessage (error_type, message) {
   return {
-    type: types.THROW_SEARCH_ERROR_MESSAGE,
+    type: types.THROW_ERROR_MESSAGE,
     error_type,
     message
   }

@@ -19,11 +19,11 @@ class App extends Component {
 			<Router>
 				<div>
 					<Switch>
-						<Route exact path="/" component={Editor} />
-						{/* <Route exact path="/" component={Main} /> */}
-						{/* <Route path="/List/:param" param="" component={ListContainer} />
-						<Route path="/Read/:key" param="" component={ReadContainer} />
-						<Route path="/Editor/" component={Editor} /> */}
+						{/* <Route exact path="/" component={Editor} /> */}
+						<Route exact path="/" component={Main} />
+						<Route path="/List/:type" serach="filter" component={ListContainer} />
+						<Route path="/Read/:key" component={ReadContainer} />
+						<Route path="/Editor/:userid" component={Editor} />
 					</Switch>
 					{/* <Editor /> */}
 				</div>
