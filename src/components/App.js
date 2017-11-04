@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // 컴포넌트
 import ListContainer from '../containers/ListContainer';
 import ReadContainer from '../containers/ReadContainer';
-import Editor from './Editor';
+import Editor from './Editor/index';
 import Main from './Main/index';
 
 class App extends Component {
@@ -19,6 +19,7 @@ class App extends Component {
 			<Router>
 				<div>
 					<Switch>
+						{/* <Route exact path="/" component={Editor} /> */}
 						<Route exact path="/" component={Main} />
 						<Route path="/List/:type" serach="filter" component={ListContainer} />
 						<Route path="/Read/:key" component={ReadContainer} />

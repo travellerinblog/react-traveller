@@ -38,6 +38,8 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(actions.listPageCount(page_amount))
         return;
     },
+    listDB: actions.listDB,
+    userDB: actions.userDB,
     handleListPageIndexing: () => dispatch(actions.listPageIndexing(index)),
     throwErrorMessage: (error_type, message) => dispatch(actions.throwErrorMessage(error_type, message))
 });
