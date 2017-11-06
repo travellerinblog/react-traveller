@@ -29,9 +29,11 @@ export default class Carousel extends Component {
       let pathname = '';
       let search = '';
       if( data.what === 'where' ) {
+        // 주석주석
         search = data.title;
         pathname = '/List/country';
       } else if ( data.what === 'bloglist' ) {
+        // 주석주석
         search = data.key;
         pathname = '/Read/';
       }
