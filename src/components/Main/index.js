@@ -130,7 +130,7 @@ class Main extends Component {
               <strong>여행의 새로운 패러다임</strong>
               <em>당신의 여행은 어땠나요? 저희 트레블로에게 알려주세요.</em>
               <button className="btn-start" type="button">
-                시작하기
+                <Link to="/Editor/aaa">시작하기</Link>
                 {/* font awesome */}
               </button>
             </p>
